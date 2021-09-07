@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.scwang.smart.refresh.layout.SmartRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/ntp_refresh"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.scwang.smart.refresh.header.MaterialHeader
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tlAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="40dp"
+            android:textColorHint="#070707"
+            app:hintTextColor="#A8A5A5">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#08C34D"
+                android:hint="服务器地址"
+                android:maxLines="1"
+                android:padding="10dp"
+                android:singleLine="true"
+                android:text=""
+                android:textColor="#070707"
+                android:textColorHint="#070707"
+                app:colorControlActivated="#08C34D"
+                app:colorControlHighlight="#070707" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tlInterval"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="40dp"
+            android:textColorHint="#070707"
+            app:hintTextColor="#A8A5A5"
+            app:layout_constraintTop_toBottomOf="@id/tlAddress">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etInterval"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#08C34D"
+                android:hint="校时间隔（小时）"
+                android:maxLines="1"
+                android:padding="10dp"
+                android:inputType="number"
+                android:singleLine="true"
+                android:text=""
+                android:textColor="#070707"
+                android:textColorHint="#070707"
+                app:colorControlActivated="#08C34D"
+                app:colorControlHighlight="#070707" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/bt_save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="40dp"
+            android:visibility="gone"
+            android:text="保存修改"/>
+
+
+    </LinearLayout>
+
+
+</com.scwang.smart.refresh.layout.SmartRefreshLayout>

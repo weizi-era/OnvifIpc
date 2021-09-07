@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F0F4F4"
+    android:fitsSystemWindows="true"
+    tools:context=".WelcomeActivity">
+
+    <LinearLayout
+        android:id="@+id/ll_skip"
+        android:layout_width="136dp"
+        android:layout_height="38dp"
+        android:orientation="horizontal"
+        android:layout_alignParentRight="true"
+        android:gravity="center"
+        android:layout_marginTop="40dp"
+        android:layout_marginRight="38dp"
+        android:background="@drawable/skip_bg">
+
+        <TextView
+            android:id="@+id/countDown"
+            android:layout_width="32dp"
+            android:layout_height="33dp"
+            android:text="3s"
+            android:textColor="#ff000000"
+            android:textSize="24sp" />
+
+        <TextView
+            android:layout_width="51dp"
+            android:layout_height="33dp"
+            android:text="跳过"
+            android:textColor="#ff000000"
+            android:textSize="24sp" />
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_above="@+id/tv_name"
+        android:src="@mipmap/logo"/>
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="28sp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="5dp"
+        android:text="罗 克 佳 华 科 技 集 团"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_below="@+id/tv_name"
+        android:layout_marginTop="5dp"
+        android:src="@mipmap/name"/>
+
+
+<!--    <TextView-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:textSize="28sp"-->
+<!--        android:textColor="@color/black"-->
+<!--        android:layout_below="@+id/tv_name"-->
+<!--        android:layout_centerInParent="true"-->
+<!--        android:text="R o c K o n t r o l"/>-->
+
+
+</RelativeLayout>

@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:spinner="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.ReplayActivity">
+
+    <RelativeLayout
+        android:id="@+id/rl_group"
+        android:layout_width="match_parent"
+        android:layout_height="250dp">
+
+        <cn.nodemedia.NodePlayerView
+            android:id="@+id/video_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ImageView
+            android:id="@+id/iv_prepause"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/icon_play"/>
+
+        <ProgressBar
+            android:id="@+id/pb_progressbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/btn_video_back"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:gravity="left"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/icon_back" />
+
+        <Button
+            android:id="@+id/btn_play_video"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="5dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/icon_topause" />
+
+        <Button
+            android:id="@+id/btn_full_video"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/icon_tofullscreen" />
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/rl_group"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_below="@+id/line">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_margin="5dp">
+
+           <TextView
+               android:layout_width="80dp"
+               android:layout_height="match_parent"
+               android:textColor="@color/black"
+               android:gravity="right"
+               android:layout_marginLeft="20dp"
+               android:textSize="20sp"
+               android:text="摄像头"/>
+
+            <com.example.spinner_lib.MaterialSpinner
+                android:id="@+id/cameraSpin"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/spinner_bg"
+                android:textSize="15sp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                spinner:ms_background_color="@android:color/white"
+                spinner:ms_popupwindow_height="wrap_content"
+                spinner:ms_popupwindow_maxheight="200dp"
+                spinner:ms_text_color="@color/black" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_margin="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textColor="@color/black"
+                android:layout_marginLeft="20dp"
+                android:gravity="right"
+                android:textSize="20sp"
+                android:text="录像类型"/>
+
+            <com.example.spinner_lib.MaterialSpinner
+                android:id="@+id/videoTypeSpin"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/spinner_bg"
+                android:textSize="15sp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                spinner:ms_background_color="@android:color/white"
+                spinner:ms_popupwindow_height="wrap_content"
+                spinner:ms_popupwindow_maxheight="200dp"
+                spinner:ms_text_color="@color/black" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textColor="@color/black"
+                android:gravity="right"
+                android:layout_marginLeft="20dp"
+                android:textSize="20sp"
+                android:text="开始时间"/>
+
+            <TextView
+                android:id="@+id/startTime"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:textSize="15sp"
+                android:gravity="center"
+                android:layout_marginLeft="20dp"
+                android:background="@drawable/spinner_bg"/>
+
+            <ImageView
+                android:id="@+id/iv_startTime"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="20dp"
+                android:src="@mipmap/icon_date"/>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textColor="@color/black"
+                android:gravity="right"
+                android:layout_marginLeft="20dp"
+                android:textSize="20sp"
+                android:text="结束时间"/>
+
+            <TextView
+                android:id="@+id/endTime"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:textSize="15sp"
+                android:layout_marginLeft="20dp"
+                android:gravity="center"
+                android:background="@drawable/spinner_bg"/>
+
+            <ImageView
+                android:id="@+id/iv_endTime"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="20dp"
+                android:src="@mipmap/icon_date"/>
+
+        </LinearLayout>
+
+
+        <Button
+            android:id="@+id/btnQuery"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:textSize="20sp"
+            android:text="查询"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+       <ImageView
+           android:id="@+id/iv_novideo"
+           android:layout_width="100dp"
+           android:layout_height="100dp"
+           android:layout_gravity="center"
+           android:layout_marginTop="100dp"
+           android:src="@drawable/novideo"
+           android:visibility="gone"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

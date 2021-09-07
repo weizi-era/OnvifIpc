@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:spinner="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="通道"
+                android:layout_gravity="center_vertical"
+                android:gravity="right"
+                android:textSize="15sp"
+                android:textColor="@color/black"/>
+
+            <com.example.spinner_lib.MaterialSpinner
+                android:id="@+id/channelSpin"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_margin="10dp"
+                android:layout_weight="2"
+                android:background="@drawable/spinner_bg"
+                android:textSize="15sp"
+                spinner:ms_background_color="@android:color/white"
+                spinner:ms_popupwindow_height="wrap_content"
+                spinner:ms_popupwindow_maxheight="200dp"
+                spinner:ms_text_color="@color/black" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="码流类型"
+                android:layout_gravity="center_vertical"
+                android:gravity="right"
+                android:textSize="15sp"
+                android:textColor="@color/black"/>
+
+            <com.example.spinner_lib.MaterialSpinner
+                android:id="@+id/streamTypeSpin"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="30dp"
+                android:layout_margin="10dp"
+                android:textSize="15sp"
+                android:background="@drawable/spinner_bg"
+                spinner:ms_background_color="@android:color/white"
+                spinner:ms_popupwindow_height="wrap_content"
+                spinner:ms_popupwindow_maxheight="200dp"
+                spinner:ms_text_color="@color/black"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#D1CECE"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="码流帧率"
+                android:gravity="right"
+                android:layout_gravity="center_vertical"
+                android:textSize="15sp"
+                android:textColor="@color/black"/>
+
+            <EditText
+                android:id="@+id/et_streamFrame"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="2"
+                android:layout_margin="10dp"
+                android:textSize="15sp"
+                android:paddingLeft="10dp"
+                android:background="@drawable/spinner_bg"/>
+
+            <CheckBox
+                android:id="@+id/cb_firstBitrate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="帧率优先"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="I帧间隔"
+                android:gravity="right"
+                android:layout_gravity="center_vertical"
+                android:textSize="15sp"
+                android:textColor="@color/black"/>
+
+            <EditText
+                android:id="@+id/et_IFrameGap"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="30dp"
+                android:layout_margin="10dp"
+                android:textSize="15sp"
+                android:paddingLeft="10dp"
+                android:background="@drawable/spinner_bg" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="码率(kb/s)"
+                android:gravity="right"
+                android:layout_gravity="center_vertical"
+                android:textSize="15sp"
+                android:textColor="@color/black"/>
+
+            <EditText
+                android:id="@+id/et_bitRate"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="30dp"
+                android:layout_margin="10dp"
+                android:textSize="15sp"
+                android:paddingLeft="10dp"
+                android:background="@drawable/spinner_bg" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="码流分辨率"
+                android:gravity="right"
+                android:layout_gravity="center_vertical"
+                android:textSize="15sp"
+                android:textColor="@color/black"/>
+
+            <com.example.spinner_lib.MaterialSpinner
+                android:id="@+id/streamResolutionSpin"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="30dp"
+                android:layout_margin="10dp"
+                android:textSize="15sp"
+                android:background="@drawable/spinner_bg"
+                spinner:ms_background_color="@android:color/white"
+                spinner:ms_popupwindow_height="wrap_content"
+                spinner:ms_popupwindow_maxheight="200dp"
+                spinner:ms_text_color="@color/black"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="码流模式"
+                android:layout_gravity="center_vertical"
+                android:gravity="right"
+                android:textSize="15sp"
+                android:textColor="@color/black"/>
+
+            <com.example.spinner_lib.MaterialSpinner
+                android:id="@+id/streamModeSpin"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="30dp"
+                android:layout_margin="10dp"
+                android:textSize="15sp"
+                android:background="@drawable/spinner_bg"
+                spinner:ms_background_color="@android:color/white"
+                spinner:ms_popupwindow_height="wrap_content"
+                spinner:ms_popupwindow_maxheight="200dp"
+                spinner:ms_text_color="@color/black"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="视频编码类型"
+                android:layout_gravity="center_vertical"
+                android:gravity="right"
+                android:textSize="15sp"
+                android:textColor="@color/black"/>
+
+            <com.example.spinner_lib.MaterialSpinner
+                android:id="@+id/encodeTypeSpin"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="30dp"
+                android:layout_margin="10dp"
+                android:textSize="15sp"
+                android:background="@drawable/spinner_bg"
+                spinner:ms_background_color="@android:color/white"
+                spinner:ms_popupwindow_height="wrap_content"
+                spinner:ms_popupwindow_maxheight="200dp"
+                spinner:ms_text_color="@color/black"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="编码等级"
+                android:layout_gravity="center_vertical"
+                android:gravity="right"
+                android:textSize="15sp"
+                android:textColor="@color/black"/>
+
+            <com.example.spinner_lib.MaterialSpinner
+                android:id="@+id/encodeLevelSpin"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="30dp"
+                android:layout_margin="10dp"
+                android:textSize="15sp"
+                android:background="@drawable/spinner_bg"
+                spinner:ms_background_color="@android:color/white"
+                spinner:ms_popupwindow_height="wrap_content"
+                spinner:ms_popupwindow_maxheight="200dp"
+                spinner:ms_text_color="@color/black"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="码率类型"
+                android:layout_gravity="center_vertical"
+                android:gravity="right"
+                android:textSize="15sp"
+                android:textColor="@color/black"/>
+
+            <com.example.spinner_lib.MaterialSpinner
+                android:id="@+id/bitrateTypeSpin"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="30dp"
+                android:layout_margin="10dp"
+                android:textSize="15sp"
+                android:background="@drawable/spinner_bg"
+                spinner:ms_background_color="@android:color/white"
+                spinner:ms_popupwindow_height="wrap_content"
+                spinner:ms_popupwindow_maxheight="200dp"
+                spinner:ms_text_color="@color/black"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="GOP 模式"
+                android:layout_gravity="center_vertical"
+                android:gravity="right"
+                android:textSize="15sp"
+                android:textColor="@color/black"/>
+
+            <com.example.spinner_lib.MaterialSpinner
+                android:id="@+id/gopModeSpin"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="30dp"
+                android:layout_margin="10dp"
+                android:textSize="15sp"
+                android:background="@drawable/spinner_bg"
+                spinner:ms_background_color="@android:color/white"
+                spinner:ms_popupwindow_height="wrap_content"
+                spinner:ms_popupwindow_maxheight="200dp"
+                spinner:ms_text_color="@color/black"/>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/bt_save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="40dp"
+            android:text="保存修改"/>
+
+    </LinearLayout>
+
+</ScrollView>

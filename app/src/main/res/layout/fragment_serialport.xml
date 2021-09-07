@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:spinner="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="串口"
+                android:layout_gravity="center_vertical"
+                android:gravity="right"
+                android:textSize="15sp"
+                android:textColor="@color/black"/>
+
+            <com.example.spinner_lib.MaterialSpinner
+                android:id="@+id/serialSpin"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="30dp"
+                android:layout_margin="10dp"
+                android:textSize="15sp"
+                android:background="@drawable/spinner_bg"
+                spinner:ms_background_color="@android:color/white"
+                spinner:ms_popupwindow_height="wrap_content"
+                spinner:ms_popupwindow_maxheight="200dp"
+                spinner:ms_text_color="@color/black"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#D1CECE"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="工作模式"
+                android:gravity="right"
+                android:layout_gravity="center_vertical"
+                android:textSize="15sp"
+                android:textColor="@color/black"/>
+
+            <com.example.spinner_lib.MaterialSpinner
+                android:id="@+id/modeSpin"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="30dp"
+                android:layout_margin="10dp"
+                android:textSize="15sp"
+                android:background="@drawable/spinner_bg"
+                spinner:ms_background_color="@android:color/white"
+                spinner:ms_popupwindow_height="wrap_content"
+                spinner:ms_popupwindow_maxheight="200dp"
+                spinner:ms_text_color="@color/black"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="波特率(bps)"
+                android:layout_gravity="center_vertical"
+                android:gravity="right"
+                android:textSize="15sp"
+                android:textColor="@color/black"/>
+
+            <com.example.spinner_lib.MaterialSpinner
+                android:id="@+id/bpsSpin"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="30dp"
+                android:layout_margin="10dp"
+                android:textSize="15sp"
+                android:background="@drawable/spinner_bg"
+                spinner:ms_background_color="@android:color/white"
+                spinner:ms_popupwindow_height="wrap_content"
+                spinner:ms_popupwindow_maxheight="200dp"
+                spinner:ms_text_color="@color/black"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="数据位"
+                android:layout_gravity="center_vertical"
+                android:gravity="right"
+                android:textSize="15sp"
+                android:textColor="@color/black"/>
+
+            <com.example.spinner_lib.MaterialSpinner
+                android:id="@+id/dataSpin"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="30dp"
+                android:layout_margin="10dp"
+                android:textSize="15sp"
+                android:background="@drawable/spinner_bg"
+                spinner:ms_background_color="@android:color/white"
+                spinner:ms_popupwindow_height="wrap_content"
+                spinner:ms_popupwindow_maxheight="200dp"
+                spinner:ms_text_color="@color/black"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="停止位"
+                android:layout_gravity="center_vertical"
+                android:gravity="right"
+                android:textSize="15sp"
+                android:textColor="@color/black"/>
+
+            <com.example.spinner_lib.MaterialSpinner
+                android:id="@+id/stopSpin"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="30dp"
+                android:layout_margin="10dp"
+                android:textSize="15sp"
+                android:background="@drawable/spinner_bg"
+                spinner:ms_background_color="@android:color/white"
+                spinner:ms_popupwindow_height="wrap_content"
+                spinner:ms_popupwindow_maxheight="200dp"
+                spinner:ms_text_color="@color/black"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="流控"
+                android:layout_gravity="center_vertical"
+                android:gravity="right"
+                android:textSize="15sp"
+                android:textColor="@color/black"/>
+
+            <com.example.spinner_lib.MaterialSpinner
+                android:id="@+id/flowSpin"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="30dp"
+                android:layout_margin="10dp"
+                android:textSize="15sp"
+                android:background="@drawable/spinner_bg"
+                spinner:ms_background_color="@android:color/white"
+                spinner:ms_popupwindow_height="wrap_content"
+                spinner:ms_popupwindow_maxheight="200dp"
+                spinner:ms_text_color="@color/black"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="校验"
+                android:layout_gravity="center_vertical"
+                android:gravity="right"
+                android:textSize="15sp"
+                android:textColor="@color/black"/>
+
+            <com.example.spinner_lib.MaterialSpinner
+                android:id="@+id/checkSpin"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="30dp"
+                android:layout_margin="10dp"
+                android:textSize="15sp"
+                android:background="@drawable/spinner_bg"
+                spinner:ms_background_color="@android:color/white"
+                spinner:ms_popupwindow_height="wrap_content"
+                spinner:ms_popupwindow_maxheight="200dp"
+                spinner:ms_text_color="@color/black"/>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/bt_save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="40dp"
+            android:text="保存修改"/>
+
+    </LinearLayout>
+
+</ScrollView>
