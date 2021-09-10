@@ -3,8 +3,11 @@ package com.example.onvifipc.ui;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.onvifipc.R;
@@ -24,6 +27,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     TextView btLogin;
     @BindView(R.id.btTouristLogin)
     TextView btTouristLogin;
+    @BindView(R.id.pwd_state)
+    ImageView pwd_state;
+
+    private boolean isCheck = false;
 
     @Override
     public int getLayoutId() {
@@ -58,13 +65,28 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 startActivity(new Intent(LoginActivity.this, RealVideoActivity.class));
                 finish();
                 break;
+            case R.id.pwd_state:
+                if (isCheck) {
+                    isCheck = false;
+                    pwd_state.setImageResource(R.mipmap.pwd_hide);
+                    password.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                } else {
+                    isCheck = true;
+                    pwd_state.setImageResource(R.mipmap.pwd_show);
+                    password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                }
+                password.setSelection(password.getText().toString().length());
+                break;
         }
     }
 
     private void initView() {
         btLogin.setOnClickListener(this);
         btTouristLogin.setOnClickListener(this);
+        pwd_state.setOnClickListener(this);
+        password.setTransformationMethod(PasswordTransformationMethod.getInstance());
     }
+
 
     private void login() {
         if (account.getText().toString().equals("admin") && password.getText().toString().equals("admin")) {

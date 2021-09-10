@@ -23,7 +23,7 @@
 ////            byte[] data = et_send.getText().toString().getBytes();
 ////            TcpClient.getInstance().sendByteCmd(data, 1001);
 //        } else {
-//         //   ToastUtils.showToast(context, "尚未连接");
+//          //  ToastUtils.showToast(context, "尚未连接");
 //        }
 //    }
 //

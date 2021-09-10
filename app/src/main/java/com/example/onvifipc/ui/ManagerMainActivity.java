@@ -301,4 +301,10 @@ public class ManagerMainActivity extends BaseActivity implements View.OnClickLis
             super.onBackPressed();
         }
     }
+
+    public void setErrorState() {
+        //todo 当电池电压值为错误值时，不使能录像功能
+        // 通过 /cgi-bin/param.cgi?action=update&group=RECORD&channel=0&RECORD.streamType=1&RECORD.preRec=5&RECORD.recordTime=5&RECORD.redundancy=0&RECORD.audioRec=1&RECORD.lockDuration=0&RECORD.RecordBackup=3&RECORD.SVCLevel=0&RECORD.enableRec=1&RECORD.recPackTime=10&RECORD.DAY0.allDayFlag=0&RECORD.DAY0.T0.timeSeg=0/9:00-12:00&RECORD.DAY0.T1.timeSeg=0/0:00-24:00&RECORD.DAY0.T2.timeSeg=0/0:00-24:00&RECORD.DAY0.T3.timeSeg=0/0:00-24:00
+
+    }
 }

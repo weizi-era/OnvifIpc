@@ -1,5 +1,10 @@
 package com.example.onvifipc.base;
 
+import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +15,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import androidx.fragment.app.Fragment;
+
+import com.example.onvifipc.ui.LoginActivity;
+import com.example.onvifipc.utils.ActivityCollector;
 import com.kingja.loadsir.callback.Callback;
 import com.kingja.loadsir.core.LoadService;
 import com.kingja.loadsir.core.LoadSir;
@@ -81,4 +89,5 @@ public abstract class BaseFragment extends Fragment {
     protected abstract void onNetReload(View v);
 
     protected abstract int onCreateFragmentView();
+
 }

@@ -1,6 +1,11 @@
 package com.example.onvifipc.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -15,6 +20,8 @@ import com.example.onvifipc.Api;
 import com.example.onvifipc.R;
 import com.example.onvifipc.adapter.CameraAdapter;
 import com.example.onvifipc.base.BaseFragment;
+import com.example.onvifipc.ui.LoginActivity;
+import com.example.onvifipc.utils.ActivityCollector;
 import com.example.onvifipc.utils.RetrofitPool;
 import com.example.onvifipc.utils.SplitUtils;
 import com.example.onvifipc.utils.ToastUtils;
@@ -91,6 +98,7 @@ public class NetworkFragment extends BaseFragment implements RadioGroup.OnChecke
                 ToastUtils.showToast(getContext(), "点击了" + ethLists.get(position));
             }
         });
+
     }
 
     private void getNetworkInfo() {
@@ -197,6 +205,7 @@ public class NetworkFragment extends BaseFragment implements RadioGroup.OnChecke
         if (v.getId() == R.id.bt_save) {
             updateNetworkInfo();
         }
+        getActivity().sendBroadcast(new Intent("FORCE_OFFLINE"));
     }
 
     private void updateNetworkInfo() {
@@ -275,4 +284,5 @@ public class NetworkFragment extends BaseFragment implements RadioGroup.OnChecke
     protected int onCreateFragmentView() {
         return R.layout.fragment_network;
     }
+
 }
