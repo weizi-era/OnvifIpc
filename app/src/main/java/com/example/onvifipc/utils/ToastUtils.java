@@ -8,4 +8,8 @@ public class ToastUtils {
     public static void showToast(Context context, String content) {
         Toast.makeText(context, content, Toast.LENGTH_SHORT).show();
     }
+
+    public static void showToastLong(Context context, String content) {
+        Toast.makeText(context, content, Toast.LENGTH_LONG).show();
+    }
 }

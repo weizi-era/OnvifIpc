@@ -3,27 +3,31 @@ package com.example.onvifipc.ui;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.example.onvifipc.Common;
 import com.example.onvifipc.R;
 import com.example.onvifipc.base.BaseActivity;
+import com.example.onvifipc.tcpclient.TaskCenter;
+import com.example.onvifipc.utils.ByteUtil;
+import com.example.onvifipc.utils.CRC16Util;
 import com.example.onvifipc.utils.DensityUtil;
-import com.example.onvifipc.view.MyVideoView;
+import com.example.onvifipc.utils.ToastUtils;
 
 import butterknife.BindView;
 import cn.nodemedia.NodePlayer;
-import cn.nodemedia.NodePlayerDelegate;
 import cn.nodemedia.NodePlayerView;
 
 @SuppressLint("NonConstantResourceId")
@@ -55,6 +59,20 @@ public class RealVideoActivity extends BaseActivity implements View.OnTouchListe
     Button btn_play_video2;
     @BindView(R.id.btn_video_back2)
     Button btn_video_back2;
+    @BindView(R.id.tv_outSideVoltage)
+    TextView tv_outSideVoltage;
+    @BindView(R.id.tv_longitude)
+    TextView tv_longitude;
+    @BindView(R.id.tv_latitude)
+    TextView tv_latitude;
+    @BindView(R.id.tv_BatteryVoltage)
+    TextView tv_BatteryVoltage;
+    @BindView(R.id.tv_lastElectricity)
+    TextView tv_lastElectricity;
+    @BindView(R.id.tv_speed)
+    TextView tv_speed;
+    @BindView(R.id.iv_tcpState)
+    ImageView iv_tcpState;
 
     @BindView(R.id.ll_replay)
     LinearLayout ll_replay;
@@ -62,11 +80,72 @@ public class RealVideoActivity extends BaseActivity implements View.OnTouchListe
     private NodePlayer nodePlayer1;
     private NodePlayer nodePlayer2;
 
+    private long mExitTime = 0L;
+
+
     @Override
     protected void setData() {
+        getData();
         initView();
+
         initPlayer1();
         initPlayer2();
+    }
+
+    private void getData() {
+
+        getHardwareData(0x04, tv_latitude);  // 纬度
+        getHardwareData(0x06, tv_longitude);  // 经度
+        getHardwareData(0x08, tv_outSideVoltage);  // 外部电压
+        getHardwareData(0x0A, tv_BatteryVoltage);  // 电池电量
+
+        if (TaskCenter.getInstance().isConnected()) {
+            iv_tcpState.setImageResource(R.drawable.blue_state);
+        } else {
+            iv_tcpState.setImageResource(R.drawable.red_state);
+        }
+    }
+
+    private void getHardwareData(int registerAddr, TextView textView) {
+        synchronized (this) {
+            byte[] msg = new byte[8];
+            msg[0] = (byte)0x01;
+            msg[1] = (byte)0x03;
+            msg[2] = (byte)0x00;
+            msg[3] = (byte)registerAddr;
+            msg[4] = (byte)0x00;
+            msg[5] = (byte)0x02;
+            String crc = CRC16Util.getCRC(msg);
+            msg[6] = (byte) Integer.parseInt(crc.substring(0, 2), 16);
+            msg[7] = (byte) Integer.parseInt(crc.substring(2, 4), 16);
+
+            String s = ByteUtil.bytes2HexStr(msg);
+            Log.d("TaskCenter", "发送消息: " + s);
+
+            TaskCenter.getInstance().send(msg);
+
+            TaskCenter.getInstance().setReceivedCallback(new TaskCenter.OnReceiveCallbackBlock() {
+                @Override
+                public void callback(byte[] msg) {
+                    float finalData = CRC16Util.getFinalData(msg);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            textView.setText(String.format("%.2f", finalData) + "");
+                        }
+                    });
+
+                    Log.d("TaskCenter", "接收浮点值: " + finalData);
+                }
+            });
+
+            try {
+                Thread.sleep(300);  // 每次发送消息后睡眠200ms
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void initView() {
@@ -78,6 +157,7 @@ public class RealVideoActivity extends BaseActivity implements View.OnTouchListe
         btn_video_back2.setOnClickListener(this);
         ll_replay.setOnClickListener(this);
     }
+
 
     @Override
     public int getLayoutId() {
@@ -261,6 +341,19 @@ public class RealVideoActivity extends BaseActivity implements View.OnTouchListe
             case R.id.ll_replay:
                 startActivity(new Intent(RealVideoActivity.this, ReplayActivity.class));
                 break;
+        }
+    }
+
+
+
+    @Override
+    public void onBackPressed() {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - mExitTime > Common.EXIT_TIME) {
+            ToastUtils.showToast(this, "再按一次退出程序");
+            mExitTime = currentTime;
+        } else {
+            super.onBackPressed();
         }
     }
 }

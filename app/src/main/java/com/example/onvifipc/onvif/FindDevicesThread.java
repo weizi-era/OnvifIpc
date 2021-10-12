@@ -25,14 +25,14 @@ public class FindDevicesThread extends Thread {
     private boolean readResult = false;
     private String ipAdress;
 
-    //回调借口
+    //回调接口
     private FindDevicesListener listener;
 
     /**
      *
-     * @param context
+     * @param context context
      * @param ipAdress ip地址（192.168.1.10）
-     * @param listener
+     * @param listener listener
      */
     public FindDevicesThread(Context context, String ipAdress, FindDevicesListener listener) {
         this.listener = listener;

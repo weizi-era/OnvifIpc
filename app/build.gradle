@@ -5,19 +5,21 @@ plugins {
 }
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion '29.0.3'
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
         applicationId "com.example.onvifipc"
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
     }
+
+    useLibrary 'org.apache.http.legacy'
 
     buildTypes {
         release {
@@ -46,7 +48,8 @@ dependencies {
     implementation'com.jakewharton:butterknife:10.2.1'
     annotationProcessor'com.jakewharton:butterknife-compiler:10.2.1'
 
-    implementation 'com.guolindev.permissionx:permissionx:1.5.1'
+    implementation 'com.github.tbruyelle:rxpermissions:0.12'
+    implementation "io.reactivex.rxjava3:rxjava:3.1.1"
 
     implementation 'com.squareup.okhttp3:okhttp:3.12.3'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
@@ -64,6 +67,5 @@ dependencies {
     implementation 'com.github.loperSeven:DateTimePicker:0.3.3'//具体版本请看顶部jitpack标识，如0.3.3,仅支持androidx
 
     implementation project(':spinner_lib')
-
 
 }

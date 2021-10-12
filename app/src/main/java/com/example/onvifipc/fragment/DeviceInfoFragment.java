@@ -1,5 +1,6 @@
 package com.example.onvifipc.fragment;
 
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -17,6 +18,7 @@ import com.example.onvifipc.base.BaseFragment;
 import com.example.onvifipc.bean.Params;
 import com.example.onvifipc.utils.RetrofitPool;
 import com.example.onvifipc.utils.SplitUtils;
+import com.example.onvifipc.utils.ToastUtils;
 import com.scwang.smart.refresh.header.MaterialHeader;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
@@ -64,7 +66,6 @@ public class DeviceInfoFragment extends BaseFragment implements OnRefreshListene
                     if (devType != null && devType.equals("2")) {
                         value = Common.DEV_TYPE;
                     }
-                    Log.d("TAG", "devType===: "  + devType);
                     paramsList.add(new Params("设备类型", value));
                     paramsList.add(new Params("设备型号", SplitUtils.getValue(stringArray, "root.SYSINFO.productName")));
                     paramsList.add(new Params("厂商名称", SplitUtils.getValue(stringArray, "root.SYSINFO.companyName")));
@@ -86,7 +87,7 @@ public class DeviceInfoFragment extends BaseFragment implements OnRefreshListene
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-
+                ToastUtils.showToast(getContext(), "服务器出错，请求失败" + t.getMessage());
             }
         });
     }

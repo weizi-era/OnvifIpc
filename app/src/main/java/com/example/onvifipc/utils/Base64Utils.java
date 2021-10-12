@@ -38,8 +38,8 @@ public class Base64Utils {
 
     /**
      * 文件编码
-     * @param filePath
-     * @return
+     * @param filePath 文件路径
+     * @return  编码后的字符串
      */
     public static String encodedFile(String filePath) {
 
@@ -51,8 +51,6 @@ public class Base64Utils {
             fis.read(buffer);
             fis.close();
             result = Base64.encodeToString(buffer,Base64.DEFAULT);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -78,8 +76,6 @@ public class Base64Utils {
             FileOutputStream fos = new FileOutputStream(file);
             fos.write(decodeBytes);
             fos.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -36,13 +36,7 @@ public class Device {
     private String imageUrl;
     private String eventUrl;
     private String analyticsUrl;
-    /**
-     * onvif MediaProfile
-     */
-    private ArrayList<MediaProfile> profiles;
 
-    private NetworkInterface networkInterface;
-    private ImageSetting imageSetting;
     public static final String USER = "admin";
     public static final String PSD = "12345";
 
@@ -51,7 +45,6 @@ public class Device {
     }
 
     public Device(String userName, String userPwd) {
-        profiles = new ArrayList<>();
         this.userName = userName;
         this.userPwd = userPwd;
     }
@@ -161,26 +154,6 @@ public class Device {
         this.analyticsUrl = analyticsUrl;
     }
 
-    public ArrayList<MediaProfile> getProfiles() {
-        return profiles;
-    }
-
-    public void addProfile(MediaProfile profile) {
-        this.profiles.add(profile);
-    }
-
-    public void addProfiles(ArrayList<MediaProfile> profiles) {
-        this.profiles.clear();
-        this.profiles.addAll(profiles);
-    }
-
-    public ImageSetting getImageSetting() {
-        return imageSetting;
-    }
-
-    public void setImageSetting(ImageSetting imageSetting) {
-        this.imageSetting = imageSetting;
-    }
 
     public String getIpAddress() {
         return ipAddress;
@@ -191,13 +164,6 @@ public class Device {
     }
 
 
-    public NetworkInterface getNetworkInterface() {
-        return networkInterface;
-    }
-
-    public void setNetworkInterface(NetworkInterface networkInterface) {
-        this.networkInterface = networkInterface;
-    }
 
     @Override
     public String toString() {
@@ -215,8 +181,6 @@ public class Device {
                 ", imageUrl='" + imageUrl + '\'' +
                 ", eventUrl='" + eventUrl + '\'' +
                 ", analyticsUrl='" + analyticsUrl + '\'' +
-                ", profiles=" + profiles +
-                ", imageSetting=" + imageSetting +
                 '}';
     }
 }

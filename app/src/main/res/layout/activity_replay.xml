@@ -1,11 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     xmlns:spinner="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.ReplayActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/teal_200" >
+
+        <TextView
+            android:id="@+id/toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:text="回放" />
+
+    </androidx.appcompat.widget.Toolbar>
 
     <RelativeLayout
         android:id="@+id/rl_group"
@@ -227,4 +245,4 @@
 
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>

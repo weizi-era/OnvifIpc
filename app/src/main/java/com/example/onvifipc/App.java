@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.example.onvifipc.callback.EmptyCallback;
 import com.example.onvifipc.callback.LoadingCallback;
+import com.example.onvifipc.tcpclient.TaskCenter;
 import com.kingja.loadsir.core.LoadSir;
 
 public class App extends Application {
@@ -16,5 +17,8 @@ public class App extends Application {
                 .addCallback(new LoadingCallback())
                 .setDefaultCallback(LoadingCallback.class)
                 .commit();
+
+        TaskCenter.getInstance().connect("192.168.1.160", 58602);
+
     }
 }

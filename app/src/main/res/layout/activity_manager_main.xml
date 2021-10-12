@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".ui.RealVideoActivity">
 
     <RelativeLayout
@@ -15,7 +16,7 @@
         <RelativeLayout
             android:id="@+id/rl_group1"
             android:layout_width="match_parent"
-            android:layout_height="250dp">
+            android:layout_height="220dp">
 
             <cn.nodemedia.NodePlayerView
                 android:id="@+id/video_view1"
@@ -67,7 +68,7 @@
         <RelativeLayout
             android:id="@+id/rl_group2"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="220dp"
             android:layout_below="@id/line">
 
             <cn.nodemedia.NodePlayerView
@@ -111,12 +112,18 @@
 
         </RelativeLayout>
 
-        <LinearLayout
+        <ScrollView
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/rl_group2"
-            android:orientation="vertical"
+            android:layout_above="@+id/ll_control"
             android:background="#C1BFBF">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -156,7 +163,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="5dp">
@@ -176,7 +183,6 @@
                     android:gravity="center"
                     android:layout_marginLeft="5dp"
                     android:textSize="15sp"
-                    android:text="106.527343"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
                     android:background="@drawable/textview_bg"/>
@@ -197,7 +203,6 @@
                     android:gravity="center"
                     android:layout_marginLeft="5dp"
                     android:textSize="15sp"
-                    android:text="12.3V"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
                     android:background="@drawable/textview_bg"/>
@@ -226,7 +231,6 @@
                     android:gravity="center"
                     android:textSize="15sp"
                     android:layout_marginLeft="5dp"
-                    android:text="106.527343"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
                     android:background="@drawable/textview_bg"/>
@@ -247,10 +251,10 @@
                     android:gravity="center"
                     android:textSize="15sp"
                     android:layout_marginLeft="5dp"
-                    android:text="6.2V"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
                     android:background="@drawable/textview_bg"/>
+
             </LinearLayout>
 
             <LinearLayout
@@ -369,93 +373,86 @@
                         android:layout_marginRight="5dp"
                         android:background="@drawable/blue_state" />
 
-                </LinearLayout>
+                    </LinearLayout>
 
+                </LinearLayout>
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="20dp"
-                android:background="#8F8E8E"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <LinearLayout
-                    android:id="@+id/ll_preview"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:gravity="center"
-                    android:layout_weight="1">
-
-                    <ImageView
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:src="@mipmap/icon_preview"
-                        android:layout_gravity="center"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:text="预览"
-                        android:textSize="25sp"
-                        android:textColor="@color/black"/>
+        </ScrollView>
 
 
+    <LinearLayout
+        android:id="@+id/ll_control"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#C1BFBF"
+        android:layout_alignParentBottom="true">
 
-                </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_preview"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_weight="1">
 
-                <LinearLayout
-                    android:id="@+id/ll_replay"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:gravity="center"
-                    android:layout_weight="1">
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@mipmap/icon_preview"/>
 
-                    <ImageView
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:src="@mipmap/icon_replay"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:text="回放"
-                        android:textSize="25sp"
-                        android:textColor="@color/black"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="预览"
+                android:textSize="25sp"
+                android:textColor="@color/black"/>
+        </LinearLayout>
 
 
-                </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_replay"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_weight="1">
 
-                <LinearLayout
-                    android:id="@+id/ll_settings"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:gravity="center"
-                    android:layout_weight="1">
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@mipmap/icon_replay"/>
 
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:src="@mipmap/settings"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="回放"
+                android:textSize="25sp"
+                android:textColor="@color/black"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:text="设置"
-                        android:textSize="25sp"
-                        android:textColor="@color/black"/>
 
-                </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_settings"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@mipmap/settings"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="设置"
+                android:textSize="25sp"
+                android:textColor="@color/black"/>
 
             </LinearLayout>
 
@@ -463,4 +460,4 @@
 
     </RelativeLayout>
 
-</ScrollView>
+</LinearLayout>

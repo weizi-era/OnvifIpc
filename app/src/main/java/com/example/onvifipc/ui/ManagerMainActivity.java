@@ -1,37 +1,45 @@
 package com.example.onvifipc.ui;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.media.MediaPlayer;
-import android.net.Uri;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.example.onvifipc.Api;
 import com.example.onvifipc.Common;
 import com.example.onvifipc.R;
 import com.example.onvifipc.base.BaseActivity;
+import com.example.onvifipc.tcpclient.TaskCenter;
+import com.example.onvifipc.utils.Base64Utils;
+import com.example.onvifipc.utils.ByteUtil;
+import com.example.onvifipc.utils.CRC16Util;
 import com.example.onvifipc.utils.DensityUtil;
+import com.example.onvifipc.utils.SplitUtils;
 import com.example.onvifipc.utils.ToastUtils;
-import com.example.onvifipc.view.MyVideoView;
 
-import org.jetbrains.annotations.NotNull;
+import java.util.Map;
 
 import butterknife.BindView;
 import cn.nodemedia.NodePlayer;
 import cn.nodemedia.NodePlayerView;
+import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 @SuppressLint("NonConstantResourceId")
 public class ManagerMainActivity extends BaseActivity implements View.OnClickListener, View.OnTouchListener {
@@ -67,18 +75,107 @@ public class ManagerMainActivity extends BaseActivity implements View.OnClickLis
     LinearLayout ll_replay;
     @BindView(R.id.ll_settings)
     LinearLayout ll_settings;
+    @BindView(R.id.tv_latitude)
+    TextView tv_latitude;
+    @BindView(R.id.tv_longitude)
+    TextView tv_longitude;
+    @BindView(R.id.tv_outSideVoltage)
+    TextView tv_outSideVoltage;
+    @BindView(R.id.tv_BatteryVoltage)
+    TextView tv_BatteryVoltage;
+    @BindView(R.id.iv_com1)
+    ImageView iv_com1;
 
-    //private TcpWork tcpWork;
     private NodePlayer nodePlayer1;
     private NodePlayer nodePlayer2;
 
     private long mExitTime = 0L;
 
+    private boolean isFirst = true;
+
+    private final String basic = Base64Utils.encodedStr("admin" + ":" + "Rock@688051");
+    private Map<String, String> map;
+
+
     @Override
     protected void setData() {
         initView();
+
+        getData();
+
+//        if (isFirst) {
+//            new AlertDialog.Builder(this).setTitle("提示")
+//                    .setMessage("请初始化IP地址")
+//                    .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            updateDefaultIp();
+//                        }
+//                    })
+//                    .setCancelable(false)
+//                    .show();
+//
+//            isFirst = false;
+//        }
+
         initPlayer1();
         initPlayer2();
+    }
+
+    private void getData() {
+
+        getHardwareData(0x04, tv_latitude);  // 纬度
+        getHardwareData(0x06, tv_longitude);  // 经度
+        getHardwareData(0x08, tv_outSideVoltage);  // 外部电压
+        getHardwareData(0x0A, tv_BatteryVoltage);  // 电池电量
+
+        if (TaskCenter.getInstance().isConnected()) {
+            iv_com1.setImageResource(R.drawable.blue_state);
+        } else {
+            iv_com1.setImageResource(R.drawable.red_state);
+        }
+    }
+
+    private void getHardwareData(int registerAddr, TextView textView) {
+        synchronized (this) {
+            byte[] msg = new byte[8];
+            msg[0] = (byte)0x01;
+            msg[1] = (byte)0x03;
+            msg[2] = (byte)0x00;
+            msg[3] = (byte)registerAddr;
+            msg[4] = (byte)0x00;
+            msg[5] = (byte)0x02;
+            String crc = CRC16Util.getCRC(msg);
+            msg[6] = (byte) Integer.parseInt(crc.substring(0, 2), 16);
+            msg[7] = (byte) Integer.parseInt(crc.substring(2, 4), 16);
+
+            String s = ByteUtil.bytes2HexStr(msg);
+            Log.d("TaskCenter", "发送消息: " + s);
+
+            TaskCenter.getInstance().send(msg);
+
+            TaskCenter.getInstance().setReceivedCallback(new TaskCenter.OnReceiveCallbackBlock() {
+                @Override
+                public void callback(byte[] msg) {
+                    float finalData = CRC16Util.getFinalData(msg);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            textView.setText(String.format("%.2f", finalData) + "");
+                        }
+                    });
+
+                    Log.d("TaskCenter", "接收浮点值: " + finalData);
+                }
+            });
+
+            try {
+                Thread.sleep(300);  // 每次发送消息后睡眠300ms
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -95,13 +192,11 @@ public class ManagerMainActivity extends BaseActivity implements View.OnClickLis
         btn_video_back2.setOnClickListener(this);
         ll_replay.setOnClickListener(this);
         ll_settings.setOnClickListener(this);
-
-      //  tcpWork = new TcpWork(this, handler);
-
-      //  tcpWork.start();
     }
 
-
+    /**
+     * 前置预览
+     */
     @SuppressLint("ClickableViewAccessibility")
     private void initPlayer1() {
 
@@ -122,6 +217,9 @@ public class ManagerMainActivity extends BaseActivity implements View.OnClickLis
         nodePlayerView1.setOnTouchListener(this);
     }
 
+    /**
+     * 后置预览
+     */
     @SuppressLint("ClickableViewAccessibility")
     private void initPlayer2() {
         nodePlayerView2.setRenderType(NodePlayerView.RenderType.SURFACEVIEW);
@@ -156,10 +254,10 @@ public class ManagerMainActivity extends BaseActivity implements View.OnClickLis
                     btn_play_video2.setVisibility(View.GONE);
                     btn_video_back2.setVisibility(View.GONE);
                     break;
-                case 10:
-                    // todo
+                case 1:
+                    ToastUtils.showToast(ManagerMainActivity.this, "连接失败，请查看网络状态");
                     break;
-                case 11:
+                case 2:
                     // todo
                     break;
             }
@@ -300,6 +398,36 @@ public class ManagerMainActivity extends BaseActivity implements View.OnClickLis
         } else {
             super.onBackPressed();
         }
+    }
+
+    private void updateDefaultIp() {
+        map.put("ETH.ipaddr", "192.168.1.161");
+        new Retrofit.Builder().baseUrl("http://192.168.1.160")
+                .client(new OkHttpClient())
+                .build()
+                .create(Api.class)
+                .updateNetworkInfo("Basic " + basic, map)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        try {
+                            String[] stringArray = SplitUtils.getStringArray(response.body());
+                            String resultCode = SplitUtils.getValue(stringArray, "root.ERR.no");
+                            if (resultCode != null && resultCode.equals("0")) {
+                                ToastUtils.showToast(ManagerMainActivity.this, "初始化成功！");
+                            } else {
+                                ToastUtils.showToast(ManagerMainActivity.this, "初始化失败！");
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                    }
+                });
     }
 
     public void setErrorState() {

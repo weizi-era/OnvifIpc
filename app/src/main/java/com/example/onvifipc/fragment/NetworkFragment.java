@@ -271,13 +271,6 @@ public class NetworkFragment extends BaseFragment implements RadioGroup.OnChecke
     @Override
     protected void onNetReload(View v) {
         getNetworkInfo();
-//        mBaseLoadService.showCallback(LoadingCallback.class);
-//        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                mBaseLoadService.showSuccess();
-//            }
-//        }, 1000);
     }
 
     @Override

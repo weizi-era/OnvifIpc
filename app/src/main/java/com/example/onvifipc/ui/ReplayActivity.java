@@ -274,6 +274,7 @@ public class ReplayActivity extends BaseActivity implements MaterialSpinner.OnIt
 
         map.put("beginTime", startTimeStamp);
         map.put("endTime", endTimeStamp);
+
         new Retrofit.Builder().baseUrl("http://" + ip).client(new OkHttpClient()).build().create(Api.class)
                 .getHistoryVideoInfo("Basic " + basic, map).enqueue(new Callback<ResponseBody>() {
             @Override

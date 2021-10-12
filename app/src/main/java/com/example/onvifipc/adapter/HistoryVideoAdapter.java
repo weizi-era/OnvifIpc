@@ -69,7 +69,6 @@ public class HistoryVideoAdapter extends RecyclerView.Adapter<HistoryVideoAdapte
                     message.what = 100;
                     message.setData(bundle);
                     handler.sendMessage(message);
-                   // Log.d("TAG", "onClick: rtsp ==" + "rtsp://192.168.1.160:8554/1/0/0/start=" + date.getTime() / 1000);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }

@@ -169,13 +169,6 @@ public class NTPTimeFragment extends BaseFragment implements View.OnClickListene
     @Override
     protected void onNetReload(View v) {
         getNtpParams();
-//        mBaseLoadService.showCallback(LoadingCallback.class);
-//        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                mBaseLoadService.showSuccess();
-//            }
-//        }, 1000);
     }
 
     @Override

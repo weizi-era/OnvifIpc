@@ -6,7 +6,6 @@ import com.example.onvifipc.bean.Device;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 
 import okhttp3.ResponseBody;
 
@@ -83,7 +82,7 @@ public class SplitUtils {
             double i = (size / (1024.0));
             bytes.append(format.format(i)).append("KB");
         }
-        else if (size < 1024) {
+        else {
             if (size <= 0) {
                 bytes.append("0B");
             }
