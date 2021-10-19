@@ -1,6 +1,7 @@
 package com.example.onvifipc.adapter;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -26,21 +27,17 @@ import java.util.Set;
 
 public class HistoryVideoAdapter extends RecyclerView.Adapter<HistoryVideoAdapter.ViewHolder> {
     private List<HistoryVideo> historyVideoList;
-    private Handler handler;
+    private int defItem = -1;//默认值
 
-    private int mSelectedPos = -1;
-
-
-    public HistoryVideoAdapter(List<HistoryVideo> historyVideoList, Handler handler) {
+    public HistoryVideoAdapter(List<HistoryVideo> historyVideoList) {
         this.historyVideoList = historyVideoList;
-        this.handler = handler;
     }
 
     @NotNull
     @Override
     public ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.history_video_item, parent, false);
-        return new ViewHolder(view);
+        return new ViewHolder(view, mOnItemClickListener);
     }
 
     @SuppressLint("SetTextI18n")
@@ -51,40 +48,41 @@ public class HistoryVideoAdapter extends RecyclerView.Adapter<HistoryVideoAdapte
         holder.startTime.setText(historyVideo.getStartTime());
         holder.endTime.setText(historyVideo.getEndTime());
         holder.videoSize.setText(historyVideo.getVideoSize());
-
-        holder.btnPlay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
+        if (defItem != -1) {
+            if (defItem == position) {
                 holder.btnPlay.setBackgroundResource(R.drawable.button_bg);
-                SimpleDateFormat format =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                try {
-                    Message message = Message.obtain();
-                    Date start = format.parse(historyVideo.getStartTime());
-                    Date end = format.parse(historyVideo.getEndTime());
-                    Bundle bundle = new Bundle();
-                    bundle.putString("startTime", String.valueOf(start.getTime() / 1000));
-                    bundle.putString("endTime", String.valueOf(end.getTime() / 1000));
-                    bundle.putString("property", historyVideo.getProperty());
-                    message.what = 100;
-                    message.setData(bundle);
-                    handler.sendMessage(message);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+            } else {
+                holder.btnPlay.setBackgroundResource(R.drawable.spinner_bg);
             }
-        });
+        }
     }
 
-    public void updateData(List<HistoryVideo> historyVideoList){
-        this.historyVideoList = historyVideoList;
+    public void setDefSelect(int position) {
+        this.defItem = position;
         notifyDataSetChanged();
     }
+
+//    public void updateData(List<HistoryVideo> historyVideoList){
+//        this.historyVideoList = historyVideoList;
+//        notifyDataSetChanged();
+//    }
 
     @Override
     public int getItemCount() {
         return historyVideoList == null ? 0 : historyVideoList.size();
     }
+
+    private OnItemClickListener mOnItemClickListener;
+
+    public interface OnItemClickListener {
+        void onButtonClicked(View view, int position);
+    }
+
+
+    public void setOnItemClickListener(OnItemClickListener clickListener) {
+        this.mOnItemClickListener = clickListener;
+    }
+
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView id;
@@ -93,13 +91,24 @@ public class HistoryVideoAdapter extends RecyclerView.Adapter<HistoryVideoAdapte
         TextView videoSize;
         Button btnPlay;
 
-        public ViewHolder(@NonNull @NotNull View itemView) {
+        public ViewHolder(@NonNull @NotNull View itemView, final OnItemClickListener onClickListener) {
             super(itemView);
             id = itemView.findViewById(R.id.tv_id);
             startTime = itemView.findViewById(R.id.startTime);
             endTime = itemView.findViewById(R.id.endTime);
             videoSize = itemView.findViewById(R.id.videoSize);
             btnPlay = itemView.findViewById(R.id.play);
+            btnPlay.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (onClickListener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            onClickListener.onButtonClicked(v, position);
+                        }
+                    }
+                }
+            });
         }
     }
 }

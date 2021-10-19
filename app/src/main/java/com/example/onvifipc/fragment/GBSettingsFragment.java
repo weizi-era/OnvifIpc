@@ -79,6 +79,11 @@ public class GBSettingsFragment extends BaseFragment implements View.OnClickList
 
 
     @Override
+    protected void initView() {
+
+    }
+
+    @Override
     protected void onLazyLoad() {
         streamTypeList = new String[] {"主码流", "次码流"};
         transList = new String[] {"UDP", "TCP"};
@@ -86,18 +91,14 @@ public class GBSettingsFragment extends BaseFragment implements View.OnClickList
         map = new HashMap<>();
         getGbInfo();
 
-        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mBaseLoadService.showSuccess();
-            }
-        }, 1000);
+//        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                mBaseLoadService.showSuccess();
+//            }
+//        }, 1000);
     }
 
-    @Override
-    protected void onNetReload(View v) {
-
-    }
 
     @Override
     protected int onCreateFragmentView() {

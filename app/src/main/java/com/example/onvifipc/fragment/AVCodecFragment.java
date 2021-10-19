@@ -77,6 +77,11 @@ public class AVCodecFragment extends BaseFragment implements MaterialSpinner.OnI
     }
 
     @Override
+    protected void initView() {
+
+    }
+
+    @Override
     public void onLazyLoad() {
         map = new HashMap<>();
         streamTypeList = new String[] {"主码流", "次码流"};
@@ -93,18 +98,14 @@ public class AVCodecFragment extends BaseFragment implements MaterialSpinner.OnI
         //默认主码流
         getAVCodecInfo(Common.MAIN_STREAM);
 
-        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mBaseLoadService.showSuccess();
-            }
-        }, 1000);
+//        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                mBaseLoadService.showSuccess();
+//            }
+//        }, 1000);
     }
 
-    @Override
-    protected void onNetReload(View v) {
-
-    }
 
     @Override
     protected int onCreateFragmentView() {

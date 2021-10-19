@@ -16,6 +16,7 @@ import com.example.onvifipc.R;
 import com.example.onvifipc.adapter.CameraParamsAdapter;
 import com.example.onvifipc.base.BaseFragment;
 import com.example.onvifipc.bean.Params;
+import com.example.onvifipc.callback.LoadingCallback;
 import com.example.onvifipc.utils.RetrofitPool;
 import com.example.onvifipc.utils.SplitUtils;
 import com.example.onvifipc.utils.ToastUtils;
@@ -100,6 +101,11 @@ public class DeviceInfoFragment extends BaseFragment implements OnRefreshListene
     }
 
     @Override
+    protected void initView() {
+
+    }
+
+    @Override
     protected void onLazyLoad() {
         paramsList = new ArrayList<>();
         RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext());
@@ -108,27 +114,27 @@ public class DeviceInfoFragment extends BaseFragment implements OnRefreshListene
         refreshLayout.setOnRefreshListener(this);
 
         getCameraParams();
-        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mBaseLoadService.showSuccess();
-            }
-        }, 1000);
-    }
-
-    @Override
-    protected void onNetReload(View v) {
-        Log.d("TAG", "onNetReload: ");
-        getCameraParams();
-//        mBaseLoadService.showCallback(LoadingCallback.class);
 //        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
 //            @Override
 //            public void run() {
 //                mBaseLoadService.showSuccess();
 //            }
 //        }, 1000);
-
     }
+
+//    @Override
+//    protected void onNetReload(View v) {
+//        Log.d("TAG", "onNetReload: ");
+//        getCameraParams();
+////        mBaseLoadService.showCallback(LoadingCallback.class);
+////        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+////            @Override
+////            public void run() {
+////                mBaseLoadService.showSuccess();
+////            }
+////        }, 1000);
+//
+//    }
 
     @Override
     protected int onCreateFragmentView() {

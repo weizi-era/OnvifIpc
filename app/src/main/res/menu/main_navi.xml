@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/navi_preview" android:title="预览"
+        android:icon="@mipmap/icon_preview"/>
+
+    <item android:id="@+id/navi_replay" android:title="回放"
+        android:icon="@mipmap/icon_replay"/>
+
+    <item android:id="@+id/navi_settings" android:title="设置"
+        android:icon="@mipmap/settings"/>
+
+</menu>

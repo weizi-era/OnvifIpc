@@ -117,6 +117,11 @@ public class NTPTimeFragment extends BaseFragment implements View.OnClickListene
     }
 
     @Override
+    protected void initView() {
+
+    }
+
+    @Override
     protected void onLazyLoad() {
         refreshLayout.setRefreshHeader(new MaterialHeader(getContext()));
         refreshLayout.setOnRefreshListener(this);
@@ -157,19 +162,19 @@ public class NTPTimeFragment extends BaseFragment implements View.OnClickListene
         });
 
         getNtpParams();
-        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mBaseLoadService.showSuccess();
-            }
-        }, 1000);
+//        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                mBaseLoadService.showSuccess();
+//            }
+//        }, 1000);
 
     }
 
-    @Override
-    protected void onNetReload(View v) {
-        getNtpParams();
-    }
+//    @Override
+//    protected void onNetReload(View v) {
+//        getNtpParams();
+//    }
 
     @Override
     protected int onCreateFragmentView() {

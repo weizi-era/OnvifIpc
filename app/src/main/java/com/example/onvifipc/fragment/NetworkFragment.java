@@ -1,10 +1,6 @@
 package com.example.onvifipc.fragment;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
@@ -20,8 +16,6 @@ import com.example.onvifipc.Api;
 import com.example.onvifipc.R;
 import com.example.onvifipc.adapter.CameraAdapter;
 import com.example.onvifipc.base.BaseFragment;
-import com.example.onvifipc.ui.LoginActivity;
-import com.example.onvifipc.utils.ActivityCollector;
 import com.example.onvifipc.utils.RetrofitPool;
 import com.example.onvifipc.utils.SplitUtils;
 import com.example.onvifipc.utils.ToastUtils;
@@ -251,6 +245,11 @@ public class NetworkFragment extends BaseFragment implements RadioGroup.OnChecke
 
 
     @Override
+    protected void initView() {
+
+    }
+
+    @Override
     protected void onLazyLoad() {
         btSave.setOnClickListener(this);
         ipv4Group.setOnCheckedChangeListener(this);
@@ -260,18 +259,18 @@ public class NetworkFragment extends BaseFragment implements RadioGroup.OnChecke
         ethLists = new ArrayList<>();
         map = new HashMap<>();
 
-        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mBaseLoadService.showSuccess();
-            }
-        }, 1000);
+//        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                mBaseLoadService.showSuccess();
+//            }
+//        }, 1000);
     }
 
-    @Override
-    protected void onNetReload(View v) {
-        getNetworkInfo();
-    }
+//    @Override
+//    protected void onNetReload(View v) {
+//        getNetworkInfo();
+//    }
 
     @Override
     protected int onCreateFragmentView() {

@@ -62,6 +62,11 @@ public class SerialPortFragment extends BaseFragment implements MaterialSpinner.
     }
 
     @Override
+    protected void initView() {
+
+    }
+
+    @Override
     public void onLazyLoad() {
         serialList = new ArrayList<>();
         serialDataList = new ArrayList<>();
@@ -83,18 +88,14 @@ public class SerialPortFragment extends BaseFragment implements MaterialSpinner.
 
         getSerialInfo();
 
-        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mBaseLoadService.showSuccess();
-            }
-        }, 1000);
+//        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                mBaseLoadService.showSuccess();
+//            }
+//        }, 1000);
     }
 
-    @Override
-    protected void onNetReload(View v) {
-
-    }
 
     @Override
     protected int onCreateFragmentView() {

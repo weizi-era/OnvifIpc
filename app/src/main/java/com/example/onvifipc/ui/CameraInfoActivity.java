@@ -88,20 +88,20 @@ public class CameraInfoActivity extends BaseActivity implements View.OnClickList
     private String userpwd;
 
     @Override
-    public int getLayoutId() {
+    public int setLayoutResourceID() {
         return R.layout.activity_camera_info;
     }
 
     @Override
-    protected void setData() {
-        initView();
+    protected void initData() {
         checkUserNameAndPwd();
         basic = Base64Utils.encodedStr(username + ":" + userpwd);
         getRtspUrl(this);
         initViewpager();
     }
 
-    private void initView() {
+    @Override
+    protected void initView() {
         btn_full_screen.setOnClickListener(this);
         btn_play_video.setOnClickListener(this);
         btn_video_back.setOnClickListener(this);
@@ -315,5 +315,20 @@ public class CameraInfoActivity extends BaseActivity implements View.OnClickList
         super.onDestroy();
         nodePlayer.stop();
         nodePlayer.release();
+    }
+
+    @Override
+    public void onLoadFailed() {
+
+    }
+
+    @Override
+    public void onLoading() {
+
+    }
+
+    @Override
+    public void onLoadSuccess() {
+
     }
 }

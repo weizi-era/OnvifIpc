@@ -1,10 +1,7 @@
 package com.example.onvifipc.base;
 
-import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
+import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,13 +13,10 @@ import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import androidx.fragment.app.Fragment;
 
-import com.example.onvifipc.ui.LoginActivity;
-import com.example.onvifipc.utils.ActivityCollector;
-import com.kingja.loadsir.callback.Callback;
 import com.kingja.loadsir.core.LoadService;
-import com.kingja.loadsir.core.LoadSir;
 
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 
 public abstract class BaseFragment extends Fragment {
@@ -32,22 +26,36 @@ public abstract class BaseFragment extends Fragment {
 
     protected LoadService mBaseLoadService;
 
+    protected Activity context;
+
+    protected Unbinder unbinder;
+    protected View mRootView;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(onCreateFragmentView(), container , false);
-        ButterKnife.bind(this, rootView);
-        mBaseLoadService = LoadSir.getDefault().register(rootView, new Callback.OnReloadListener() {
-            @Override
-            public void onReload(View v) {
-                Log.d("TAG", "onReload: 重新加载了吗");
-                onNetReload(v);
-            }
-        });
-        Log.d("TAG", "onCreateView: ");
+        if (mRootView == null) {
+            mRootView = inflater.inflate(onCreateFragmentView(), container, false);
+        }
 
-        return mBaseLoadService.getLoadLayout();
+        unbinder = ButterKnife.bind(this, mRootView);
+
+
+        initView();
+
+//        mBaseLoadService = LoadSir.getDefault().register(rootView, new Callback.OnReloadListener() {
+//            @Override
+//            public void onReload(View v) {
+//                Log.d("TAG", "onReload: 重新加载了吗");
+//                onNetReload(v);
+//            }
+//        });
+//        Log.d("TAG", "onCreateView: ");
+
+        return mRootView;
     }
+
+    protected abstract void initView();
 
 
     @Override
@@ -56,6 +64,27 @@ public abstract class BaseFragment extends Fragment {
         Log.d("TAG", "onActivityCreated: ");
         isPrepared = true;
         lazyLoad();
+    }
+
+    /**
+     * 绑定
+     * @param context
+     */
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if(context instanceof Activity){
+            this.context = (Activity) context;
+        }
+    }
+
+    /**
+     * 解绑
+     */
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        context = null;
     }
 
     @Override
@@ -83,10 +112,17 @@ public abstract class BaseFragment extends Fragment {
 
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (unbinder != null) {
+            unbinder.unbind();
+        }
+    }
+
     @UiThread
     protected abstract void onLazyLoad();
 
-    protected abstract void onNetReload(View v);
 
     protected abstract int onCreateFragmentView();
 

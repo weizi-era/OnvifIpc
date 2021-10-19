@@ -71,7 +71,7 @@ public class CameraAdapter extends RecyclerView.Adapter<CameraAdapter.ViewHolder
         isFirst.put(adapterPosition, true);
         Log.d("TAG", "onBindViewHolder: " + isFirst);
        // deviceIP.add(SplitUtils.getDeviceIP(device));
-        holder.cameraLogo.setImageResource(R.drawable.camera);
+        holder.cameraLogo.setImageResource(R.mipmap.camera_icon);
         holder.cameraUrl.setText(device.getServiceUrl());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,7 +141,7 @@ public class CameraAdapter extends RecyclerView.Adapter<CameraAdapter.ViewHolder
                     String value = SplitUtils.getValue(stringArray, "root.ERR.des");
                     Log.d("TAG", "onResponse: " + value);
                     if (value != null && value.equals("OK")) {
-                        holder.cameraLogo.setImageResource(R.drawable.login_state);
+                        holder.cameraLogo.setImageResource(R.mipmap.camera_icon_logined);
                         flagLists.set(position, true);
                         ToastUtils.showToast(context, "登录成功！");
                         Intent intent = new Intent(context, CameraInfoActivity.class);

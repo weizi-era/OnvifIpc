@@ -42,6 +42,11 @@ public class UserManagerFragment extends BaseFragment {
     }
 
     @Override
+    protected void initView() {
+
+    }
+
+    @Override
     public void onLazyLoad() {
         userList = new ArrayList<>();
         RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext());
@@ -49,13 +54,9 @@ public class UserManagerFragment extends BaseFragment {
 
         getUserInfo();
 
-        new Handler(Looper.getMainLooper()).postDelayed(() -> mBaseLoadService.showSuccess(), 1000);
+       // new Handler(Looper.getMainLooper()).postDelayed(() -> mBaseLoadService.showSuccess(), 1000);
     }
 
-    @Override
-    protected void onNetReload(View v) {
-
-    }
 
     @Override
     protected int onCreateFragmentView() {

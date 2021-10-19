@@ -11,6 +11,10 @@ public class Common {
 
     public static final String DEV_TYPE = "IPC";
 
+    public static final int SERVER_PORT = 58602;
+    public static final String SERVER_IP = "192.168.1.160";
+    public static final String UPDATE_IP = "192.168.1.161";
+
     public static final String RES_TYPE_1080 = "4000";
     public static final String RES_TYPE_720 = "1000";
 

@@ -64,4 +64,8 @@ public interface Api {
     //历史视频查询
     @GET("/cgi-bin/record.cgi?action=list&group=RECORD&channel=0&type=1")
     Call<ResponseBody> getHistoryVideoInfo(@Header("Authorization") String Authorization, @QueryMap Map<String, Long> map);
+
+    //定时录像
+    @GET("/cgi-bin/param.cgi?action=update&group=RECORD&channel=0")
+    Call<ResponseBody> updateTimeRecord(@Header("Authorization") String Authorization, @Query("enableRec") int enabled);
 }

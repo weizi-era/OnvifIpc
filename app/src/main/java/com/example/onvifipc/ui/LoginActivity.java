@@ -46,23 +46,15 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     private boolean isCheck = false;
 
-
-
     @Override
-    public int getLayoutId() {
+    public int setLayoutResourceID() {
         return R.layout.activity_login;
     }
 
     @Override
-    protected void setData() {
-        initView();
+    protected void initData() {
 
         final RxPermissions rxPermissions = new RxPermissions(this);
-
-//        String ip = "http://192.168.1.160:8000/";
-//        String splitip1 = ip.substring(7, ip.indexOf(":8"));
-//        String splitIp = ip.subSequence(7, 20).toString();
-//        Log.d("TAG", "setData: " + splitip1);
 
         rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.ACCESS_WIFI_STATE,
@@ -84,7 +76,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 login();
                 break;
             case R.id.btTouristLogin:
-                startActivity(new Intent(LoginActivity.this, RealVideoActivity.class));
+                startActivity(new Intent(LoginActivity.this, TouristActivity.class));
                 finish();
                 break;
             case R.id.pwd_state:
@@ -102,22 +94,40 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         }
     }
 
-    private void initView() {
+    @Override
+    protected void initView() {
         btLogin.setOnClickListener(this);
         btTouristLogin.setOnClickListener(this);
         pwd_state.setOnClickListener(this);
         password.setTransformationMethod(PasswordTransformationMethod.getInstance());
     }
 
-
     private void login() {
+        if (account.getText().toString().isEmpty() || password.getText().toString().isEmpty()) {
+            ToastUtils.showToast(this, "请输入账号或密码");
+            return;
+        }
         if (account.getText().toString().equals("admin") && password.getText().toString().equals("admin")) {
             ToastUtils.showToast(this, "登录成功！");
-            startActivity(new Intent(LoginActivity.this, ManagerMainActivity.class));
+            startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();
         } else {
             ToastUtils.showToast(this, "账号或密码错误");
         }
     }
 
+    @Override
+    public void onLoadFailed() {
+
+    }
+
+    @Override
+    public void onLoading() {
+
+    }
+
+    @Override
+    public void onLoadSuccess() {
+
+    }
 }

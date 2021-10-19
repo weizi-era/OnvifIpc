@@ -4,19 +4,21 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.example.onvifipc.utils.ByteUtil;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Timer;
+import java.util.Arrays;
 
 /**
  * Created by shensky on 2018/1/15.
  */
 
-public class TaskCenter {
-    private static TaskCenter instance;
-    private static final String TAG = "TaskCenter";
+public class TaskCenterCom {
+    private static TaskCenterCom instance;
+    private static final String TAG = "TaskCenterCom";
     //    Socket
     private Socket socket;
     //    IP地址
@@ -26,8 +28,6 @@ public class TaskCenter {
 
     private Thread thread;
 
-    //    Socket输出流
-    private DataOutputStream dos;
     //    Socket输入流
     private DataInputStream dis;
     //    连接回调
@@ -37,18 +37,16 @@ public class TaskCenter {
     //    接收信息回调
     private OnReceiveCallbackBlock receivedCallback;
 
-    private Handler handler;
-
     //    构造函数私有化
-    private TaskCenter() {
+    private TaskCenterCom() {
         super();
     }
     //    提供一个全局的静态方法
-    public static TaskCenter getInstance() {
+    public static TaskCenterCom getInstance() {
         if (instance == null) {
-            synchronized (TaskCenter.class) {
+            synchronized (TaskCenterCom.class) {
                 if (instance == null) {
-                    instance = new TaskCenter();
+                    instance = new TaskCenterCom();
                 }
             }
         }
@@ -73,21 +71,15 @@ public class TaskCenter {
                     socket.setTcpNoDelay(true);
                     socket.setKeepAlive(true);
                     if (isConnected()) {
-                        TaskCenter.getInstance().ipAddress = ipAddress;
-                        TaskCenter.getInstance().port = port;
+                        TaskCenterCom.getInstance().ipAddress = ipAddress;
+                        TaskCenterCom.getInstance().port = port;
                         if (connectedCallback != null) {
                             connectedCallback.callback();
                         }
 
-                        dos = new DataOutputStream(socket.getOutputStream());
                         dis = new DataInputStream(socket.getInputStream());
 
-                        receive();
-
-                        Message message = Message.obtain();
-                        message.what = 1;
-                        message.obj = "连接失败";
-                        handler.sendMessage(message);
+                        receiveComData();
 
                         Log.i(TAG,"连接成功");
                     } else {
@@ -130,9 +122,6 @@ public class TaskCenter {
     public void disconnect() {
         if (isConnected()) {
             try {
-                if (dos != null) {
-                    dos.close();
-                }
                 socket.close();
                 if (socket.isClosed()) {
                     if (disconnectedCallback != null) {
@@ -145,23 +134,26 @@ public class TaskCenter {
         }
         removeCallback();
     }
+
     /**
-     * 接收数据
+     * 接收串口数据
      */
-    public void receive() {
+    public void receiveComData() {
         while (isConnected()) {
             try {
                 /**得到的是16进制数，需要进行解析*/
-                byte[] bt = new byte[1024];
+                byte[] bt = new byte[2];
+                Log.d(TAG, "receiveComData1111: " + ByteUtil.bytes2HexStr(bt));
 //                获取接收到的字节和字节数
                 int length = dis.read(bt);
 //                获取正确的字节
                 byte[] bs = new byte[length];
+                Log.d(TAG, "receiveComData2222: " + ByteUtil.bytes2HexStr(bs));
 
                 System.arraycopy(bt, 0, bs, 0, length);
 
                 if (receivedCallback != null) {
-                    receivedCallback.callback(bs);
+                    receivedCallback.callbackComData(bs);
                 }
                 Log.i(TAG,"接收成功");
             } catch (IOException e) {
@@ -170,32 +162,6 @@ public class TaskCenter {
         }
     }
 
-    /**
-     * 发送数据
-     *
-     * @param data  数据
-     */
-    public void send(final byte[] data) {
-        synchronized (this) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    if (socket != null) {
-                        try {
-                            dos.write(data);
-                            dos.flush();
-                            Log.i(TAG,"发送成功");
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            Log.i(TAG,"发送失败");
-                        }
-                    } else {
-                        connect();
-                    }
-                }
-            }).start();
-        }
-    }
     /**
      * 回调声明
      */
@@ -206,7 +172,8 @@ public class TaskCenter {
         void callback(IOException e);
     }
     public interface OnReceiveCallbackBlock {
-        void callback(byte[] msg);
+
+        void callbackComData(byte[] bs);
     }
 
     public void setConnectedCallback(OnServerConnectedCallbackBlock connectedCallback) {
