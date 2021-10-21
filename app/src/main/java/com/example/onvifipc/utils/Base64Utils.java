@@ -10,6 +10,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 
+/**
+ * Base64编解码工具类
+ */
 public class Base64Utils {
 
     private Base64Utils() {

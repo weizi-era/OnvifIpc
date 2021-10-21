@@ -41,7 +41,7 @@ public interface Api {
     @GET("/cgi-bin/param.cgi?action=list&group=GB28181")
     Call<ResponseBody> getGbInfo(@Header("Authorization") String Authorization);
     @GET("/cgi-bin/param.cgi?action=update&group=GB28181")
-    Call<ResponseBody> updateGbInfo(@Header("Authorization") String Authorization, @QueryMap Map<String, Integer> map);
+    Call<ResponseBody> updateGbInfo(@Header("Authorization") String Authorization, @QueryMap Map<String, String> map);
 
     //视频编码参数
     @GET("/cgi-bin/param.cgi?action=list&group=VENC&channel=0")

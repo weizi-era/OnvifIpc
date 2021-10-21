@@ -12,6 +12,8 @@ import com.example.onvifipc.Api;
 import com.example.onvifipc.Common;
 import com.example.onvifipc.R;
 import com.example.onvifipc.base.BaseFragment;
+import com.example.onvifipc.base.IBaseModelListener;
+import com.example.onvifipc.model.AVCodecModel;
 import com.example.onvifipc.utils.RetrofitPool;
 import com.example.onvifipc.utils.SplitUtils;
 import com.example.onvifipc.utils.ToastUtils;
@@ -20,6 +22,7 @@ import com.example.spinner_lib.MaterialSpinner;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -30,7 +33,7 @@ import retrofit2.Response;
 
 
 @SuppressLint("NonConstantResourceId")
-public class AVCodecFragment extends BaseFragment implements MaterialSpinner.OnItemSelectedListener, View.OnClickListener {
+public class AVCodecFragment extends BaseFragment implements MaterialSpinner.OnItemSelectedListener, View.OnClickListener, IBaseModelListener<List<String>> {
 
 
     @BindView(R.id.channelSpin)
@@ -61,7 +64,6 @@ public class AVCodecFragment extends BaseFragment implements MaterialSpinner.OnI
     Button bt_save;
     private final String basic;
     private final int position;
-    private Map<String, Integer> map;
     private String[] streamTypeList;
     private String[] streamModeList;
     private String[] levelList;
@@ -70,6 +72,8 @@ public class AVCodecFragment extends BaseFragment implements MaterialSpinner.OnI
     private String[] gModeList;
     private String[] decToHexList;
     private int resolution;
+
+    private AVCodecModel mAvCodecModel;
 
     public AVCodecFragment(String basic, int position) {
         this.basic = basic;
@@ -83,7 +87,7 @@ public class AVCodecFragment extends BaseFragment implements MaterialSpinner.OnI
 
     @Override
     public void onLazyLoad() {
-        map = new HashMap<>();
+        mAvCodecModel = new AVCodecModel(basic, position, this);
         streamTypeList = new String[] {"主码流", "次码流"};
         streamModeList = new String[] {"视频流", "复合流"};
         levelList = new String[] {"baseline profile", "main profile", "high profile"};
@@ -96,14 +100,7 @@ public class AVCodecFragment extends BaseFragment implements MaterialSpinner.OnI
         streamTypeSpin.setOnItemSelectedListener(this);
 
         //默认主码流
-        getAVCodecInfo(Common.MAIN_STREAM);
-
-//        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                mBaseLoadService.showSuccess();
-//            }
-//        }, 1000);
+        mAvCodecModel.load(Common.MAIN_STREAM);
     }
 
 
@@ -112,118 +109,12 @@ public class AVCodecFragment extends BaseFragment implements MaterialSpinner.OnI
         return R.layout.fragment_avcodec;
     }
 
-    private void getAVCodecInfo(int type) {
-        Api api = RetrofitPool.getInstance().getRetrofit(position).create(Api.class);
-        api.getCodecInfo("Basic " + basic, type).enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(@NotNull Call<ResponseBody> call, @NotNull Response<ResponseBody> response) {
-                try {
-                    String[] stringArray = SplitUtils.getStringArray(response.body());
-                    String streamMode = SplitUtils.getValue(stringArray, "root.VENC.streamMixType");
-                    String h264EncLvl = SplitUtils.getValue(stringArray, "root.VENC.h264EncLvl");
-                    String frameRate = SplitUtils.getValue(stringArray, "root.VENC.frameRate");
-                    String frPreeferred = SplitUtils.getValue(stringArray, "root.VENC.frPreeferred");
-                    String iFrameIntv = SplitUtils.getValue(stringArray, "root.VENC.iFrameIntv");
-                    String veType = SplitUtils.getValue(stringArray, "root.VENC.veType");
-                    String bitRate = SplitUtils.getValue(stringArray, "root.VENC.bitRate");
-                    String bitRateType = SplitUtils.getValue(stringArray, "root.VENC.bitRateType");
-                    String resolution = SplitUtils.getValue(stringArray, "root.VENC.resolution");
-                    String gopMode = SplitUtils.getValue(stringArray, "root.VENC.gopMode");
-                    et_streamFrame.setText(frameRate);
-                    et_IFrameGap.setText(iFrameIntv);
-                    et_bitRate.setText(bitRate);
-                    int frPreeferreds = Integer.parseInt(frPreeferred);
-                    int streamModes = Integer.parseInt(streamMode);
-                    int level = Integer.parseInt(h264EncLvl);
-                    int encType = Integer.parseInt(veType);
-                    int bitType = Integer.parseInt(bitRateType);
-                    int gMode = Integer.parseInt(gopMode);
-                    String decToHex = Integer.toHexString(Integer.parseInt(resolution));
-                    updateUI(streamModes, frPreeferreds, level, encType, bitType, gMode, decToHex);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-            }
-        });
-    }
-
-    private void updateUI(int frPreeferreds, int streamModes, int level, int encType, int bitType, int gMode, String decToHex) {
-        channelSpin.setItems("通道 01");
-        channelSpin.setSelectedIndex(0);
-        channelSpin.setBackgroundResource(R.drawable.spinner_bg);
-        streamTypeSpin.setItems(streamTypeList);
-        streamTypeSpin.setSelectedIndex(0);
-        streamTypeSpin.setBackgroundResource(R.drawable.spinner_bg);
-        cb_firstBitrate.setChecked(frPreeferreds != 0);
-        streamModeSpin.setItems(streamModeList);
-        streamModeSpin.setSelectedIndex(streamModes);
-        streamModeSpin.setBackgroundResource(R.drawable.spinner_bg);
-        encodeLevelSpin.setItems(levelList);
-        encodeLevelSpin.setSelectedIndex(level);
-        encodeLevelSpin.setBackgroundResource(R.drawable.spinner_bg);
-        encodeTypeSpin.setItems(encTypeList);
-        encodeTypeSpin.setSelectedIndex(encType);
-        encodeTypeSpin.setBackgroundResource(R.drawable.spinner_bg);
-        bitrateTypeSpin.setItems(bitTypeList);
-        bitrateTypeSpin.setSelectedIndex(bitType);
-        bitrateTypeSpin.setBackgroundResource(R.drawable.spinner_bg);
-        gopModeSpin.setItems(gModeList);
-        gopModeSpin.setSelectedIndex(gMode);
-        gopModeSpin.setBackgroundResource(R.drawable.spinner_bg);
-        streamResolutionSpin.setItems(decToHexList);
-        if (decToHex.equals(Common.RES_TYPE_1080)) {
-            streamResolutionSpin.setSelectedIndex(0);
-        } else {
-            streamResolutionSpin.setSelectedIndex(1);
-        }
-        streamResolutionSpin.setBackgroundResource(R.drawable.spinner_bg);
-    }
-
-    private void updateAVCodecInfo() {
-        map.put("streamType", streamTypeSpin.getSelectedIndex());
-        map.put("VENC.streamMixType", streamModeSpin.getSelectedIndex());
-        map.put("VENC.h264EncLvl", encodeLevelSpin.getSelectedIndex());
-        map.put("VENC.frameRate", Integer.parseInt(et_bitRate.getText().toString()));
-        map.put("VENC.frPreeferred", cb_firstBitrate.isChecked() ? 1 : 0);
-        map.put("VENC.iFrameIntv", Integer.parseInt(et_IFrameGap.getText().toString()));
-        map.put("VENC.veType", encodeTypeSpin.getSelectedIndex());
-        map.put("VENC.bitRate", Integer.parseInt(et_bitRate.getText().toString()));
-        map.put("VENC.bitRateType", bitrateTypeSpin.getSelectedIndex());
-        map.put("VENC.resolution", resolution);
-        map.put("VENC.gopMode", gopModeSpin.getSelectedIndex());
-        RetrofitPool.getInstance().getRetrofit(position).create(Api.class)
-                .updateCodecInfo("Basic " + basic, map).enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(@NotNull Call<ResponseBody> call, @NotNull Response<ResponseBody> response) {
-                try {
-                    String[] stringArray = SplitUtils.getStringArray(response.body());
-                    String resultCode = SplitUtils.getValue(stringArray, "root.ERR.no");
-                    if (resultCode != null && resultCode.equals("0")) {
-                        ToastUtils.showToast(getContext(), "参数修改成功!");
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(@NotNull Call<ResponseBody> call, @NotNull Throwable t) {
-                ToastUtils.showToast(getContext(), "网络请求失败!" + t.getMessage());
-            }
-        });
-    }
-
     @Override
     public void onItemSelected(MaterialSpinner view, int position, long id, Object item) {
         switch (view.getId()) {
             case R.id.streamTypeSpin:
                 streamTypeSpin.setSelectedIndex(position);
-                getAVCodecInfo(position);
+                mAvCodecModel.load(position);
                 break;
             case R.id.streamResolutionSpin:
                 streamResolutionSpin.setSelectedIndex(position);
@@ -257,8 +148,61 @@ public class AVCodecFragment extends BaseFragment implements MaterialSpinner.OnI
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.bt_save:
-                updateAVCodecInfo();
+                mAvCodecModel.update(streamTypeSpin.getSelectedIndex(), streamModeSpin.getSelectedIndex(),
+                        encodeLevelSpin.getSelectedIndex(), et_streamFrame.getText().toString(), cb_firstBitrate.isChecked(),
+                        et_IFrameGap.getText().toString(), encodeTypeSpin.getSelectedIndex(), et_bitRate.getText().toString(),
+                        bitrateTypeSpin.getSelectedIndex(), resolution, gopModeSpin.getSelectedIndex());
                 break;
+        }
+    }
+
+    @Override
+    public void onLoadSuccess(List<String> dataList) {
+        et_streamFrame.setText(dataList.get(2));
+        et_IFrameGap.setText(dataList.get(4));
+        et_bitRate.setText(dataList.get(6));
+
+        channelSpin.setItems("通道 01");
+        channelSpin.setSelectedIndex(0);
+        channelSpin.setBackgroundResource(R.drawable.spinner_bg);
+        streamTypeSpin.setItems(streamTypeList);
+        streamTypeSpin.setSelectedIndex(0);
+        streamTypeSpin.setBackgroundResource(R.drawable.spinner_bg);
+        cb_firstBitrate.setChecked(Integer.parseInt(dataList.get(3)) != 0);
+        streamModeSpin.setItems(streamModeList);
+        streamModeSpin.setSelectedIndex(Integer.parseInt(dataList.get(0)));
+        streamModeSpin.setBackgroundResource(R.drawable.spinner_bg);
+        encodeLevelSpin.setItems(levelList);
+        encodeLevelSpin.setSelectedIndex(Integer.parseInt(dataList.get(1)));
+        encodeLevelSpin.setBackgroundResource(R.drawable.spinner_bg);
+        encodeTypeSpin.setItems(encTypeList);
+        encodeTypeSpin.setSelectedIndex(Integer.parseInt(dataList.get(5)));
+        encodeTypeSpin.setBackgroundResource(R.drawable.spinner_bg);
+        bitrateTypeSpin.setItems(bitTypeList);
+        bitrateTypeSpin.setSelectedIndex(Integer.parseInt(dataList.get(7)));
+        bitrateTypeSpin.setBackgroundResource(R.drawable.spinner_bg);
+        gopModeSpin.setItems(gModeList);
+        gopModeSpin.setSelectedIndex(Integer.parseInt(dataList.get(9)));
+        gopModeSpin.setBackgroundResource(R.drawable.spinner_bg);
+        streamResolutionSpin.setItems(decToHexList);
+        String decToHex = Integer.toHexString(Integer.parseInt(dataList.get(8)));
+        if (decToHex.equals(Common.RES_TYPE_1080)) {
+            streamResolutionSpin.setSelectedIndex(0);
+        } else {
+            streamResolutionSpin.setSelectedIndex(1);
+        }
+        streamResolutionSpin.setBackgroundResource(R.drawable.spinner_bg);
+    }
+
+    @Override
+    public void onLoadFailure(String message) {
+        ToastUtils.showToast(getContext(), message);
+    }
+
+    @Override
+    public void onUpdateSuccess(String response) {
+        if (response != null && response.equals("0")) {
+            ToastUtils.showToast(getContext(), "参数修改成功!");
         }
     }
 }

@@ -9,14 +9,12 @@ import com.example.onvifipc.tcpclient.TaskCenter;
 import com.example.onvifipc.tcpclient.TaskCenterCom;
 import com.example.onvifipc.utils.ActivityManager;
 import com.kingja.loadsir.core.LoadSir;
-import com.littlegreens.netty.client.NettyTcpClient;
 
 public class BaseApplication extends Application {
 
     private static ActivityManager activityManager;
     private static BaseApplication application;
     private static Context context;
-    public static NettyTcpClient nettyTcpClient;
 
     @Override
     public void onCreate() {

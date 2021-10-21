@@ -2,9 +2,6 @@ package com.example.onvifipc.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,6 +13,8 @@ import com.example.onvifipc.Api;
 import com.example.onvifipc.R;
 import com.example.onvifipc.adapter.CameraAdapter;
 import com.example.onvifipc.base.BaseFragment;
+import com.example.onvifipc.base.IBaseModelListener;
+import com.example.onvifipc.model.NetworkModel;
 import com.example.onvifipc.utils.RetrofitPool;
 import com.example.onvifipc.utils.SplitUtils;
 import com.example.onvifipc.utils.ToastUtils;
@@ -36,7 +35,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 @SuppressLint("NonConstantResourceId")
-public class NetworkFragment extends BaseFragment implements RadioGroup.OnCheckedChangeListener, View.OnClickListener {
+public class NetworkFragment extends BaseFragment implements RadioGroup.OnCheckedChangeListener, View.OnClickListener, IBaseModelListener<String[]> {
 
     @BindView(R.id.spinner)
     MaterialSpinner spinner;
@@ -69,12 +68,10 @@ public class NetworkFragment extends BaseFragment implements RadioGroup.OnChecke
     private List<String> ethLists;
     private final String basic;
     private final int position;
-    private int count = 0;
-    private int dhcp = 0;
-    private int dns = 0;
-    private Map<String, String> map;
     private boolean ipIsAuto = true;
     private boolean dnsIsAuto = true;
+
+    private NetworkModel mNetworkModel;
 
     public NetworkFragment(String basic, int position) {
         this.basic = basic;
@@ -82,7 +79,6 @@ public class NetworkFragment extends BaseFragment implements RadioGroup.OnChecke
     }
 
     private void initSpinner(List<String> ethLists) {
-        Log.d("TAG", "initSpinner的网卡count ==: " + count);
         spinner.setItems(ethLists);
         spinner.setSelectedIndex(0);
         spinner.setBackgroundResource(R.drawable.spinner_bg);
@@ -93,65 +89,6 @@ public class NetworkFragment extends BaseFragment implements RadioGroup.OnChecke
             }
         });
 
-    }
-
-    private void getNetworkInfo() {
-        Api api = RetrofitPool.getInstance().getRetrofit(position).create(Api.class);
-        api.getNetworkInfo("Basic " + basic).enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(@NotNull Call<ResponseBody> call, @NotNull Response<ResponseBody> response) {
-                try {
-                    String[] stringArray = SplitUtils.getStringArray(response.body());
-                    String ethCount = SplitUtils.getValue(stringArray, "root.ETH.ethCount");
-                    String physicsAddress = SplitUtils.getValue(stringArray, "root.ETH.E0.mac");
-                    String ipv4Address = SplitUtils.getValue(stringArray, "root.ETH.E0.ipaddr");
-                    String ipv4Mask = SplitUtils.getValue(stringArray, "root.ETH.E0.netmask");
-                    String ipv4Gateway = SplitUtils.getValue(stringArray, "root.ETH.E0.gateway");
-                    String dnsServer1 = SplitUtils.getValue(stringArray, "root.ETH.E0.dns1");
-                    String dnsServer2 = SplitUtils.getValue(stringArray, "root.ETH.E0.dns2");
-                    String autoDhcp = SplitUtils.getValue(stringArray, "root.ETH.E0.dhcp");
-                    String autoDns = SplitUtils.getValue(stringArray, "root.ETH.E0.autoDns");
-                    dhcp = Integer.parseInt(autoDhcp);
-                    dns = Integer.parseInt(autoDns);
-                    count = Integer.parseInt(ethCount);
-                    updateUI(count, dhcp, dns, physicsAddress, ipv4Address, ipv4Mask, ipv4Gateway, dnsServer1, dnsServer2);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(@NotNull Call<ResponseBody> call, @NotNull Throwable t) {
-
-            }
-        });
-    }
-
-    private void updateUI(int count, int dhcp, int dns, String physicsAddress, String ipv4Address, String ipv4Mask, String ipv4Gateway, String dnsServer1, String dnsServer2) {
-        Log.d("TAG", "dhcp=== : " + dhcp);
-        tv_physicsAddress.setText(physicsAddress);
-        et_ipv4Addr.setText(ipv4Address);
-        et_ipv4Mask.setText(ipv4Mask);
-        et_ipv4Gateway.setText(ipv4Gateway);
-        et_dnsServer1.setText(dnsServer1);
-        et_dnsServer2.setText(dnsServer2);
-        if (dhcp == 0) {
-            useIpv4.setChecked(true);
-        } else {
-            autoIpv4.setChecked(true);
-        }
-
-        if (dns == 0) {
-            useDns.setChecked(true);
-        } else {
-            autoDns.setChecked(true);
-        }
-        for (int i = 1; i < count + 1; i++) {
-            ethLists.add("ETH " + i);
-        }
-        Log.d("TAG", "这里的网卡count ==: " + count);
-        initSpinner(ethLists);
     }
 
     @Override
@@ -197,52 +134,11 @@ public class NetworkFragment extends BaseFragment implements RadioGroup.OnChecke
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.bt_save) {
-            updateNetworkInfo();
+            mNetworkModel.update(ipIsAuto, dnsIsAuto, et_ipv4Addr.getText().toString(), et_ipv4Mask.getText().toString(),
+                    et_ipv4Gateway.getText().toString(), et_dnsServer1.getText().toString(), et_dnsServer2.getText().toString());
         }
         getActivity().sendBroadcast(new Intent("FORCE_OFFLINE"));
     }
-
-    private void updateNetworkInfo() {
-        Api api = RetrofitPool.getInstance().getRetrofit(position).create(Api.class);
-        if (ipIsAuto) {
-            map.put("ETH.dhcp", "1");
-        } else {
-            map.put("ETH.dhcp", "0");
-        }
-        if (dnsIsAuto) {
-            map.put("ETH.autoDns", "1");
-        } else {
-            map.put("ETH.autoDns", "0");
-        }
-        map.put("ETH.ipaddr", et_ipv4Addr.getText().toString());
-        map.put("ETH.netmask", et_ipv4Mask.getText().toString());
-        map.put("ETH.gateway", et_ipv4Gateway.getText().toString());
-        map.put("ETH.dns1", et_dnsServer1.getText().toString());
-        map.put("ETH.dns2", et_dnsServer2.getText().toString());
-        api.updateNetworkInfo("Basic " + basic, map).enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(@NotNull Call<ResponseBody> call, @NotNull Response<ResponseBody> response) {
-                try {
-                    String[] stringArray = SplitUtils.getStringArray(response.body());
-                    String resultCode = SplitUtils.getValue(stringArray, "root.ERR.no");
-                    if (resultCode != null && resultCode.equals("0")) {
-                        CameraAdapter.isFirst.put(position, true);
-                        ToastUtils.showToast(getContext(), "参数修改成功！");
-                    } else {
-                        ToastUtils.showToast(getContext(), "参数修改失败！");
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(@NotNull Call<ResponseBody> call, @NotNull Throwable t) {
-
-            }
-        });
-    }
-
 
     @Override
     protected void initView() {
@@ -251,30 +147,62 @@ public class NetworkFragment extends BaseFragment implements RadioGroup.OnChecke
 
     @Override
     protected void onLazyLoad() {
+        ethLists = new ArrayList<>();
+        mNetworkModel = new NetworkModel(basic, position, this);
         btSave.setOnClickListener(this);
         ipv4Group.setOnCheckedChangeListener(this);
         dnsGroup.setOnCheckedChangeListener(this);
 
-        getNetworkInfo();
-        ethLists = new ArrayList<>();
-        map = new HashMap<>();
-
-//        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                mBaseLoadService.showSuccess();
-//            }
-//        }, 1000);
+        mNetworkModel.load();
     }
 
-//    @Override
-//    protected void onNetReload(View v) {
-//        getNetworkInfo();
-//    }
 
     @Override
     protected int onCreateFragmentView() {
         return R.layout.fragment_network;
     }
 
+    @Override
+    public void onLoadSuccess(String[] strings) {
+
+        int dhcp = Integer.parseInt(strings[7]);
+        int dns = Integer.parseInt(strings[8]);
+        int count = Integer.parseInt(strings[0]);
+        tv_physicsAddress.setText(strings[1]);
+        et_ipv4Addr.setText(strings[2]);
+        et_ipv4Mask.setText(strings[3]);
+        et_ipv4Gateway.setText(strings[4]);
+        et_dnsServer1.setText(strings[5]);
+        et_dnsServer2.setText(strings[6]);
+        if (dhcp == 0) {
+            useIpv4.setChecked(true);
+        } else {
+            autoIpv4.setChecked(true);
+        }
+
+        if (dns == 0) {
+            useDns.setChecked(true);
+        } else {
+            autoDns.setChecked(true);
+        }
+        for (int i = 1; i < count + 1; i++) {
+            ethLists.add("ETH " + i);
+        }
+        initSpinner(ethLists);
+    }
+
+    @Override
+    public void onLoadFailure(String message) {
+        ToastUtils.showToast(getContext(), message);
+    }
+
+    @Override
+    public void onUpdateSuccess(String response) {
+        if (response != null && response.equals("0")) {
+            CameraAdapter.isFirst.put(position, true);
+            ToastUtils.showToast(getContext(), "参数修改成功！");
+        } else {
+            ToastUtils.showToast(getContext(), "参数修改失败！");
+        }
+    }
 }

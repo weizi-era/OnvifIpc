@@ -13,9 +13,12 @@ import com.example.onvifipc.Api;
 import com.example.onvifipc.R;
 import com.example.onvifipc.adapter.UserAdapter;
 import com.example.onvifipc.base.BaseFragment;
+import com.example.onvifipc.base.IBaseModelListener;
 import com.example.onvifipc.bean.User;
+import com.example.onvifipc.model.UserManagerModel;
 import com.example.onvifipc.utils.RetrofitPool;
 import com.example.onvifipc.utils.SplitUtils;
+import com.example.onvifipc.utils.ToastUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -29,12 +32,12 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 @SuppressLint("NonConstantResourceId")
-public class UserManagerFragment extends BaseFragment {
+public class UserManagerFragment extends BaseFragment implements IBaseModelListener<List<User>> {
     @BindView(R.id.user_recyclerView)
     RecyclerView recyclerView;
-    private List<User> userList;
     private final String basic;
     private final int position;
+    private UserManagerModel mUserManagerModel;
 
     public UserManagerFragment(String basic, int position) {
         this.basic = basic;
@@ -48,13 +51,11 @@ public class UserManagerFragment extends BaseFragment {
 
     @Override
     public void onLazyLoad() {
-        userList = new ArrayList<>();
+        mUserManagerModel = new UserManagerModel(basic, position, this);
         RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(manager);
 
-        getUserInfo();
-
-       // new Handler(Looper.getMainLooper()).postDelayed(() -> mBaseLoadService.showSuccess(), 1000);
+        mUserManagerModel.load();
     }
 
 
@@ -63,41 +64,19 @@ public class UserManagerFragment extends BaseFragment {
         return R.layout.fragment_user;
     }
 
-    private void getUserInfo() {
-        Api api = RetrofitPool.getInstance().getRetrofit(position).create(Api.class);
-        api.getUserInfo("Basic " + basic).enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(@NotNull Call<ResponseBody> call, @NotNull Response<ResponseBody> response) {
-                try {
-                    String[] stringArray = SplitUtils.getStringArray(response.body());
-                    String sCount = SplitUtils.getValue(stringArray, "root.USER.userCount");
-                    int userCount = Integer.parseInt(sCount);
-                    for (int i = 0; i < userCount; i++) {
-                        String userName = SplitUtils.getValue(stringArray, "root.USER.U" + i + ".name");
-                        String localRight = SplitUtils.getValue(stringArray, "root.USER.U" + i + ".localRight");
-                        String remoteRight = SplitUtils.getValue(stringArray, "root.USER.U" + i + ".remoteRight");
-                        int userLocalRight = Integer.parseInt(localRight);
-                        int userRemoteRight = Integer.parseInt(remoteRight);
-                        userList.add(new User(i + 1, userName, userLocalRight, userRemoteRight));
-                    }
-                    UserAdapter adapter = new UserAdapter(userList);
-                    recyclerView.setAdapter(adapter);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(@NotNull Call<ResponseBody> call, @NotNull Throwable t) {
-
-            }
-        });
+    @Override
+    public void onLoadSuccess(List<User> userList) {
+        UserAdapter adapter = new UserAdapter(userList);
+        recyclerView.setAdapter(adapter);
     }
 
-    private void updateUserInfo() {
-        //todo  更新用户信息（账号 密码  权限）
+    @Override
+    public void onLoadFailure(String message) {
+        ToastUtils.showToast(getContext(), message);
     }
 
+    @Override
+    public void onUpdateSuccess(String response) {
 
-
+    }
 }

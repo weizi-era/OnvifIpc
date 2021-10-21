@@ -9,7 +9,9 @@ import android.widget.Button;
 import com.example.onvifipc.Api;
 import com.example.onvifipc.R;
 import com.example.onvifipc.base.BaseFragment;
+import com.example.onvifipc.base.IBaseModelListener;
 import com.example.onvifipc.bean.SerialData;
+import com.example.onvifipc.model.SerialPortModel;
 import com.example.onvifipc.utils.RetrofitPool;
 import com.example.onvifipc.utils.SplitUtils;
 import com.example.onvifipc.utils.ToastUtils;
@@ -27,7 +29,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 @SuppressLint("NonConstantResourceId")
-public class SerialPortFragment extends BaseFragment implements MaterialSpinner.OnItemSelectedListener, View.OnClickListener {
+public class SerialPortFragment extends BaseFragment implements MaterialSpinner.OnItemSelectedListener, View.OnClickListener, IBaseModelListener<List<SerialData>> {
     @BindView(R.id.serialSpin)
     MaterialSpinner serialSpin;
     @BindView(R.id.modeSpin)
@@ -54,7 +56,8 @@ public class SerialPortFragment extends BaseFragment implements MaterialSpinner.
     private String[] flowList;
     private String[] checkList;
     private List<SerialData> serialDataList;
-    private Map<String, Integer> map;
+
+    private SerialPortModel mSerialPortModel;
 
     public SerialPortFragment(String basic, int position) {
         this.basic = basic;
@@ -68,9 +71,9 @@ public class SerialPortFragment extends BaseFragment implements MaterialSpinner.
 
     @Override
     public void onLazyLoad() {
+        mSerialPortModel = new SerialPortModel(basic, position, this);
         serialList = new ArrayList<>();
         serialDataList = new ArrayList<>();
-        map = new HashMap<>();
         modeList = new String[]{"透明通道", "PTZ 模式", "报警盒模式"};
         bpsList = new String[]{"600", "1200", "1800", "2400", "4800", "9600", "19200", "38400", "57600", "115200"};
         dataList = new String[]{"5", "6", "7", "8"};
@@ -86,14 +89,8 @@ public class SerialPortFragment extends BaseFragment implements MaterialSpinner.
         flowSpin.setOnItemSelectedListener(this);
         checkSpin.setOnItemSelectedListener(this);
 
-        getSerialInfo();
+        mSerialPortModel.load();
 
-//        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                mBaseLoadService.showSuccess();
-//            }
-//        }, 1000);
     }
 
 
@@ -102,41 +99,6 @@ public class SerialPortFragment extends BaseFragment implements MaterialSpinner.
         return R.layout.fragment_serialport;
     }
 
-    private void getSerialInfo() {
-        Api api = RetrofitPool.getInstance().getRetrofit(position).create(Api.class);
-        api.getSerialInfo("Basic " + basic).enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try {
-                    String[] stringArray = SplitUtils.getStringArray(response.body());
-                    String serialCount = SplitUtils.getValue(stringArray, "root.SERIAL.serialCount");
-                    int count = Integer.parseInt(serialCount);
-                    for (int i = 0; i < count; i++) {
-                        String workMode = SplitUtils.getValue(stringArray, "root.SERIAL.S" + i + ".workMode");
-                        String baudRate = SplitUtils.getValue(stringArray, "root.SERIAL.S" + i + ".baudRate");
-                        String dataBite = SplitUtils.getValue(stringArray, "root.SERIAL.S" + i + ".dataBit");
-                        String stopBite = SplitUtils.getValue(stringArray, "root.SERIAL.S" + i + ".stopBit");
-                        String flowType = SplitUtils.getValue(stringArray, "root.SERIAL.S" + i + ".flowType");
-                        String parityType = SplitUtils.getValue(stringArray, "root.SERIAL.S" + i + ".parityType");
-                        int mode = Integer.parseInt(workMode);
-                        int flow = Integer.parseInt(flowType);
-                        int parity = Integer.parseInt(parityType);
-                        serialDataList.add(new SerialData(i, mode, baudRate, dataBite, stopBite, flow, parity));
-                    }
-                    SerialData data = serialDataList.get(0);
-                    updateUI(count, data.getWorkMode(), data.getBaudRate(),
-                            data.getDataBit(), data.getStopBit(), data.getFlowType(), data.getParityType());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-            }
-        });
-    }
 
     private void updateUI(int count, int mode, String rate, String dataBites, String stopBites, int flow, int parity) {
         for (int i = 1; i < count + 1; i++) {
@@ -206,45 +168,32 @@ public class SerialPortFragment extends BaseFragment implements MaterialSpinner.
         }
     }
 
-    private void updateSerialInfo() {
-        Api api = RetrofitPool.getInstance().getRetrofit(position).create(Api.class);
-        SerialData data = serialDataList.get(1);
-        map.put("SERIAL.no", data.getSerialId());
-        map.put("SERIAL.workMode", data.getWorkMode());
-        map.put("SERIAL.alarmBox", 0);
-        map.put("SERIAL.baudRate", Integer.parseInt(data.getBaudRate()));
-        map.put("SERIAL.dataBit", Integer.parseInt(data.getDataBit()));
-        map.put("SERIAL.stopBit",Integer.parseInt(data.getStopBit()));
-        map.put("SERIAL.flowType", data.getFlowType());
-
-        api.updateSerialInfo("Basic " + basic, map).enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try {
-                    String[] stringArray = SplitUtils.getStringArray(response.body());
-                    String resultCode = SplitUtils.getValue(stringArray, "root.ERR.no");
-                    if (resultCode != null && resultCode.equals("0")) {
-                        ToastUtils.showToast(getContext(), "参数修改成功!");
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-            }
-        });
-    }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.bt_save:
-                updateSerialInfo();
+                mSerialPortModel.update();
                 break;
+        }
+    }
+
+    @Override
+    public void onLoadSuccess(List<SerialData> serialDataList) {
+        this.serialDataList = serialDataList;
+        SerialData data = serialDataList.get(0);
+        updateUI(serialDataList.size(), data.getWorkMode(), data.getBaudRate(),
+                data.getDataBit(), data.getStopBit(), data.getFlowType(), data.getParityType());
+    }
+
+    @Override
+    public void onLoadFailure(String message) {
+        ToastUtils.showToast(getContext(), message);
+    }
+
+    @Override
+    public void onUpdateSuccess(String response) {
+        if (response != null && response.equals("0")) {
+            ToastUtils.showToast(getContext(), "参数修改成功!");
         }
     }
 }
