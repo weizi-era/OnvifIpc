@@ -195,6 +195,7 @@ public class ReplayFragment extends BaseFragment implements Contract.IReplayView
             adapter.setOnItemClickListener(new HistoryVideoAdapter.OnItemClickListener() {
                 @Override
                 public void onButtonClicked(View view, int position) {
+                    iv_prepause.setVisibility(View.GONE);
                     adapter.setDefSelect(position);
                     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     HistoryVideo historyVideo = historyVideoList.get(position);
@@ -214,11 +215,11 @@ public class ReplayFragment extends BaseFragment implements Contract.IReplayView
     }
 
     private void startPlay(String ip, String startTime, String endTime, String property) {
-        iv_prepause.setVisibility(View.GONE);
         String rtspUrl = "rtsp://" + ip + ":554" + "/1/0/0/start=" + startTime + "&end=" + endTime  + "&property=" + property;
-        Log.d("startPlay", "initPlayer: " + rtspUrl);
         nodePlayer.setInputUrl(rtspUrl);
-        pb_progressbar.setVisibility(View.GONE);
+        if (nodePlayer.isPlaying()) {
+            nodePlayer.stop();
+        }
         nodePlayer.start();
     }
 

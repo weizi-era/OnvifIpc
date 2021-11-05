@@ -21,6 +21,10 @@ public class Common {
     public static final int MAIN_STREAM = 0;  // 主码流
     public static final int MINOR_STREAM = 1; // 次码流
 
+
+    public static final int PARAMS = 2;   //硬件参数标志
+    public static final int CODE = 3;   // 设备MN号标志
+    public static final int COM = 4;   // 串口状态标志
     /**
      * 两次点击返回键的时间差
      */

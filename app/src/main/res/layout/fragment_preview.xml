@@ -174,10 +174,10 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
                     android:textSize="20sp"
-                    android:text="经度:"/>
+                    android:text="温度:"/>
 
                 <TextView
-                    android:id="@+id/tv_longitude"
+                    android:id="@+id/tv_temperature"
                     android:layout_width="100dp"
                     android:layout_height="match_parent"
                     android:textColor="@color/black"
@@ -222,10 +222,10 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
                     android:textSize="20sp"
-                    android:text="纬度:"/>
+                    android:text="湿度:"/>
 
                 <TextView
-                    android:id="@+id/tv_latitude"
+                    android:id="@+id/tv_humidity"
                     android:layout_width="100dp"
                     android:layout_height="match_parent"
                     android:textColor="@color/black"
@@ -319,12 +319,73 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
                     android:textSize="20sp"
-                    android:text="通讯状态:"/>
+                    android:text="经度:"/>
+
+                <TextView
+                    android:id="@+id/tv_longitude"
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/black"
+                    android:gravity="center"
+                    android:textSize="15sp"
+                    android:layout_marginLeft="5dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:background="@drawable/textview_bg"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:layout_marginLeft="20dp"
+                    android:textSize="20sp"
+                    android:text="纬度:"/>
+
+                <TextView
+                    android:id="@+id/tv_latitude"
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/black"
+                    android:gravity="center"
+                    android:textSize="15sp"
+                    android:layout_marginLeft="5dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:background="@drawable/textview_bg"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:text="航向角:"/>
+
+                <TextView
+                    android:id="@+id/tv_angle"
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/black"
+                    android:gravity="center"
+                    android:textSize="15sp"
+                    android:layout_marginLeft="5dp"
+                    android:text=""
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:background="@drawable/textview_bg"/>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginLeft="10dp"
                     android:background="@drawable/textview_bg">
 
                     <TextView
@@ -344,7 +405,7 @@
                         android:layout_height="15dp"
                         android:layout_gravity="center"
                         android:layout_marginRight="5dp"
-                        android:background="@drawable/blue_state" />
+                        android:background="@drawable/red_state" />
 
                 </LinearLayout>
 
@@ -372,11 +433,42 @@
                         android:layout_height="15dp"
                         android:layout_gravity="center"
                         android:layout_marginRight="5dp"
-                        android:background="@drawable/blue_state" />
+                        android:background="@drawable/red_state" />
 
                 </LinearLayout>
 
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginBottom="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:text="录像状态:"/>
+
+                <TextView
+                    android:id="@+id/tv_videoState"
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:textSize="15sp"
+                    android:layout_marginLeft="5dp"
+                    android:text=""
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:background="@drawable/textview_bg"/>
+
+            </LinearLayout>
+
+
 
         </LinearLayout>
 

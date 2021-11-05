@@ -2,34 +2,35 @@ package com.example.onvifipc.ui;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.os.Build;
+import android.os.Handler;
+import android.os.Message;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.onvifipc.Api;
+import com.example.onvifipc.Common;
 import com.example.onvifipc.R;
-import com.example.onvifipc.adapter.CameraAdapter;
 import com.example.onvifipc.base.BaseActivity;
-import com.example.onvifipc.utils.Base64Utils;
-import com.example.onvifipc.utils.SplitUtils;
+import com.example.onvifipc.tcpclient.TaskCenter;
+import com.example.onvifipc.tcpclient.TaskCenterCom;
 import com.example.onvifipc.utils.ToastUtils;
-import com.kingja.loadsir.core.LoadSir;
 import com.tbruyelle.rxpermissions3.RxPermissions;
 
-import java.util.Map;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.BindView;
-import okhttp3.OkHttpClient;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
 
 @SuppressLint("NonConstantResourceId")
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
@@ -43,12 +44,21 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     TextView btTouristLogin;
     @BindView(R.id.pwd_state)
     ImageView pwd_state;
+    @BindView(R.id.loading)
+    ProgressBar progressBar;
+    @BindView(R.id.loadingText)
+    TextView loadingText;
 
     private boolean isCheck = false;
 
     @Override
     public int setLayoutResourceID() {
         return R.layout.activity_login;
+    }
+
+    @Override
+    public void reConnect() {
+
     }
 
     @Override
@@ -59,6 +69,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.ACCESS_WIFI_STATE,
                         Manifest.permission.ACCESS_NETWORK_STATE,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
                         Manifest.permission.INTERNET)
                 .subscribe(granted -> {
                     if (granted) { // Always true pre-M
@@ -76,6 +87,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 login();
                 break;
             case R.id.btTouristLogin:
+                progressBar.setVisibility(View.VISIBLE);
+                loadingText.setVisibility(View.VISIBLE);
                 startActivity(new Intent(LoginActivity.this, TouristActivity.class));
                 finish();
                 break;
@@ -95,6 +108,13 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        progressBar.setVisibility(View.GONE);
+        loadingText.setVisibility(View.GONE);
+    }
+
+    @Override
     protected void initView() {
         btLogin.setOnClickListener(this);
         btTouristLogin.setOnClickListener(this);
@@ -108,8 +128,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             return;
         }
         if (account.getText().toString().equals("admin") && password.getText().toString().equals("admin")) {
-            ToastUtils.showToast(this, "登录成功！");
+            progressBar.setVisibility(View.VISIBLE);
+            loadingText.setVisibility(View.VISIBLE);
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            ToastUtils.showToast(this, "登录成功！");
             finish();
         } else {
             ToastUtils.showToast(this, "账号或密码错误");

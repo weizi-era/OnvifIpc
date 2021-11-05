@@ -36,6 +36,11 @@ public class RouterConfigActivity extends BaseActivity {
     }
 
     @Override
+    public void reConnect() {
+
+    }
+
+    @Override
     public void onLoadFailed() {
 
     }

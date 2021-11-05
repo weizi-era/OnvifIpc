@@ -32,6 +32,7 @@ public class LoginDialog extends Dialog implements View.OnClickListener {
         super(context);
         setContentView(R.layout.login_dialog);
         initView();
+
     }
 
     private void initView() {

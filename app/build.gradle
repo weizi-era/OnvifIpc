@@ -5,6 +5,13 @@ plugins {
 }
 
 android {
+
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
     compileSdkVersion 28
     buildToolsVersion '28.0.3'
 
@@ -41,9 +48,12 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.0'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.0'
+
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+    implementation 'com.github.jiusetian:EasySocket:2.1.1'
 
     // rtsp直播播放器
     implementation 'com.github.NodeMedia:NodeMediaClient-Android:2.9.16'
@@ -79,6 +89,9 @@ dependencies {
 
     // 日期选择器
     implementation 'com.github.loperSeven:DateTimePicker:0.3.3'//具体版本请看顶部jitpack标识，如0.3.3,仅支持androidx
+
+    // Utils 工具类
+    api 'com.blankj:utilcodex:1.30.6'
 
     implementation project(':spinner_lib')
 

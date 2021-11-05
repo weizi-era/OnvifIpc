@@ -67,5 +67,5 @@ public interface Api {
 
     //定时录像
     @GET("/cgi-bin/param.cgi?action=update&group=RECORD&channel=0")
-    Call<ResponseBody> updateTimeRecord(@Header("Authorization") String Authorization, @Query("enableRec") int enabled);
+    Call<ResponseBody> stopTimeRecord(@Header("Authorization") String Authorization, @QueryMap Map<String, Integer> map);
 }

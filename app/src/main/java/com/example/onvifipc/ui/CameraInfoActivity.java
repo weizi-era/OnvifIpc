@@ -38,7 +38,6 @@ import com.example.onvifipc.utils.Base64Utils;
 import com.example.onvifipc.utils.DensityUtil;
 import com.example.onvifipc.utils.RetrofitPool;
 import com.example.onvifipc.utils.SplitUtils;
-import com.example.onvifipc.view.MyVideoView;
 import com.google.android.material.tabs.TabLayout;
 
 import org.jetbrains.annotations.NotNull;
@@ -49,7 +48,6 @@ import java.util.Objects;
 
 import butterknife.BindView;
 import cn.nodemedia.NodePlayer;
-import cn.nodemedia.NodePlayerDelegate;
 import cn.nodemedia.NodePlayerView;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -97,6 +95,7 @@ public class CameraInfoActivity extends BaseActivity implements View.OnClickList
         checkUserNameAndPwd();
         basic = Base64Utils.encodedStr(username + ":" + userpwd);
         getRtspUrl(this);
+
         initViewpager();
     }
 
@@ -313,8 +312,12 @@ public class CameraInfoActivity extends BaseActivity implements View.OnClickList
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        nodePlayer.stop();
         nodePlayer.release();
+    }
+
+    @Override
+    public void reConnect() {
+
     }
 
     @Override

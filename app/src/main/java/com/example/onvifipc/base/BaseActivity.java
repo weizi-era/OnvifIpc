@@ -18,8 +18,17 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.onvifipc.BaseApplication;
+import com.example.onvifipc.Common;
+import com.example.onvifipc.tcpclient.TaskCenter;
+import com.example.onvifipc.tcpclient.TaskCenterCom;
 import com.example.onvifipc.ui.LoginActivity;
-import com.example.onvifipc.utils.ActivityManager;
+import com.example.onvifipc.bean.NetworkChangeEvent;
+import com.example.onvifipc.utils.ToastUtils;
+import com.example.onvifipc.utils.WifiUtils;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -33,6 +42,10 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     public Fade mFadeTransition;
 
     private ForceOfflineReceiver receiver;
+
+    private Context mContext;
+
+    protected boolean mCheckNetwork = true;
 
   //  protected P mPresenter;
 
@@ -51,7 +64,15 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
 
         setContentView(setLayoutResourceID());
 
+        mContext = this;
+
         unbinder = ButterKnife.bind(this);
+
+
+        EventBus.getDefault().register(this);
+
+        hasNetwork(WifiUtils.isConnected(mContext));
+
 
         //initPresenter();
 
@@ -78,6 +99,8 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     @Override
     protected void onResume() {
         super.onResume();
+
+        //hasNetwork(WifiUtils.isConnected(mContext));
 
         IntentFilter filter = new IntentFilter();
         filter.addAction("FORCE_OFFLINE");
@@ -112,8 +135,12 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
             unbinder.unbind();
         }
 
+        EventBus.getDefault().unregister(this);
+
        // BaseApplication.getActivityManager().finishAll();
     }
+
+    public abstract void reConnect();
 
     private boolean fixOrientation(){
         try {
@@ -127,6 +154,30 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
             e.printStackTrace();
         }
         return false;
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onNetworkChangeEvent(NetworkChangeEvent event) {
+        hasNetwork(event.isConnected);
+    }
+
+    public boolean isCheckNetWork() {
+        return mCheckNetwork;
+    }
+
+    private void hasNetwork(boolean isConnected) {
+        if (isCheckNetWork()) {
+            if (isConnected) {
+                reConnect();
+                TaskCenter.getInstance().connect(Common.SERVER_IP, Common.SERVER_PORT);
+                TaskCenterCom.getInstance().connect(Common.UPDATE_IP, Common.SERVER_PORT);
+                ToastUtils.showToast(mContext, "已连接设备WIFI");
+            } else {
+                TaskCenter.getInstance().disconnect();
+                TaskCenterCom.getInstance().disconnect();
+                ToastUtils.showToast(mContext, "未连接设备WIFI");
+            }
+        }
     }
 
     private boolean isTranslucentOrFloating(){

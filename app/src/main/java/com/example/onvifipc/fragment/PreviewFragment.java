@@ -2,7 +2,11 @@ package com.example.onvifipc.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -12,18 +16,20 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.onvifipc.Api;
+import com.example.onvifipc.Common;
 import com.example.onvifipc.R;
 import com.example.onvifipc.base.BaseFragment;
-import com.example.onvifipc.base.Event;
 import com.example.onvifipc.contract.preview.Contract;
 import com.example.onvifipc.presenter.PreviewPresenter;
 import com.example.onvifipc.utils.Base64Utils;
 import com.example.onvifipc.utils.SplitUtils;
 import com.example.onvifipc.utils.ToastUtils;
 
-import org.greenrobot.eventbus.EventBus;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -62,10 +68,18 @@ public class PreviewFragment extends BaseFragment implements  Contract.IPreviewV
     TextView tv_speed;
     @BindView(R.id.tv_mnCode)
     TextView tv_mnCode;
+    @BindView(R.id.tv_angle)
+    TextView tv_angle;
     @BindView(R.id.iv_com1)
     ImageView iv_com1;
     @BindView(R.id.iv_com2)
     ImageView iv_com2;
+    @BindView(R.id.tv_videoState)
+    TextView tv_videoState;
+    @BindView(R.id.tv_temperature)
+    TextView tv_temperature;
+    @BindView(R.id.tv_humidity)
+    TextView tv_humidity;
 
     public NodePlayer nodePlayer1;
     public NodePlayer nodePlayer2;
@@ -74,18 +88,11 @@ public class PreviewFragment extends BaseFragment implements  Contract.IPreviewV
 
     private final String basic = Base64Utils.encodedStr("admin" + ":" + "Rock@688051");
 
-    private static final int LATITUDE = 1;
-    private static final int LONGITUDE = 2;
-    private static final int OUTSIDEVOLTAGE = 3;
-    private static final int BATTERYVOLTAGE = 4;
-    private static final int SPEED = 5;
-    public static final int MNTOPFOUR = 6;
-    public static final int MNLASTFOUR = 7;
-    public static final int LASTBAT = 8;
+    public static boolean STOP_FLAG = false;
+    public static boolean START_FLAG = false;
 
     private Timer timer;
     private TimerTask task;
-    private String[] mnList = new String[2];
 
 
     @Override
@@ -140,22 +147,23 @@ public class PreviewFragment extends BaseFragment implements  Contract.IPreviewV
 
     private void onLoadData() {
 
-        previewPresenter.getHardwareData(0xBF, MNTOPFOUR); // 设备MN号前四位
-        previewPresenter.getHardwareData(0xBE, MNLASTFOUR); // 设备MN号后四位
+        previewPresenter.getHardwareData(Common.CODE);
+        previewPresenter.getComState();
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         task = new TimerTask() {
             @Override
             public void run() {
-                previewPresenter.getHardwareData(0x04, LATITUDE);  // 纬度
-                previewPresenter.getHardwareData(0x06, LONGITUDE);  // 经度
-                previewPresenter.getHardwareData(0x08, OUTSIDEVOLTAGE);  // 外部电压
-                previewPresenter.getHardwareData(0x0A, BATTERYVOLTAGE);  // 电池电量
-                previewPresenter.getHardwareData(0x12, SPEED); // 速度
-                previewPresenter.getHardwareData(0x16, LASTBAT); // 剩余电量
+                previewPresenter.getHardwareData(Common.PARAMS);
             }
         };
 
-        timer.schedule(task, 0, 4000);
+        timer.scheduleAtFixedRate(task, 1000, 4000);
 
     }
 
@@ -168,7 +176,6 @@ public class PreviewFragment extends BaseFragment implements  Contract.IPreviewV
     @SuppressLint("ClickableViewAccessibility")
     private void initPlayer(NodePlayer nodePlayer, NodePlayerView nodePlayerView, String url) {
 
-        //progressbar.setVisibility(View.VISIBLE);
         nodePlayerView.setRenderType(NodePlayerView.RenderType.SURFACEVIEW);
         nodePlayerView.setUIViewContentMode(NodePlayerView.UIViewContentMode.ScaleToFill);
 
@@ -180,7 +187,6 @@ public class PreviewFragment extends BaseFragment implements  Contract.IPreviewV
         nodePlayer.setVideoEnable(true);
         nodePlayer.setBufferTime(0);
         nodePlayer.start();
-        //progressbar.setVisibility(View.GONE);
     }
 
     @Override
@@ -190,63 +196,115 @@ public class PreviewFragment extends BaseFragment implements  Contract.IPreviewV
 
 
     @Override
-    public void showComState1(String result) {
-        if (result != null) {
-            iv_com1.setImageResource(R.mipmap.red);
+    public void showComState1(boolean isConnected) {
+        if (isConnected) {
+            iv_com1.setImageResource(R.drawable.blue_state);
+        } else {
+            iv_com1.setImageResource(R.drawable.red_state);
         }
     }
 
     @Override
     public void showComState2(String result) {
-        if (result != null) {
-            iv_com2.setImageResource(R.mipmap.blue);
-        } else {
-            iv_com2.setImageResource(R.mipmap.red);
-        }
+        Message message = Message.obtain();
+        message.what = Common.COM;
+        message.obj = result;
+        handler.sendMessage(message);
     }
 
+    @SuppressLint("HandlerLeak")
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case Common.COM:
+                    String result = (String) msg.obj;
+                    if (result != null) {
+                        iv_com2.setImageResource(R.drawable.blue_state);
+                    } else {
+                        iv_com2.setImageResource(R.drawable.red_state);
+                    }
+                    break;
+                case Common.CODE:
+                    List<String> codeList = (List<String>) msg.obj;
+                    if (codeList != null && codeList.size() == 2) {
+                        tv_mnCode.setText(codeList.get(1) + "01DF00" + codeList.get(0));
+                    } else {
+                        ToastUtils.showToast(context, "MN号数据出错");
+                    }
+                    break;
+                case Common.PARAMS:
+                    List<Float> paramsList = (List<Float>) msg.obj;
+                    if (paramsList != null && paramsList.size() == 12) {
+                        tv_temperature.setText(String.format("%.2f", paramsList.get(0)) + " ℃");
+                        tv_humidity.setText(String.format("%.2f", paramsList.get(1)) + " RH");
+                        tv_latitude.setText(String.format("%.6f", paramsList.get(2)));
+                        tv_longitude.setText(String.format("%.6f", paramsList.get(3)));
+                        tv_outSideVoltage.setText(String.format("%.2f", paramsList.get(4)) + " V");
+                        tv_BatteryVoltage.setText(String.format("%.2f", paramsList.get(5)) + " V");
+                        tv_speed.setText(String.format("%.2f", paramsList.get(9)) + " km/h");
+                        tv_angle.setText(String.format("%.2f", paramsList.get(10)) + " 度");
+                        //float v = Float.parseFloat(paramsList.get(11));
+                        tv_lastElectricity.setText(String.format("%.2f", paramsList.get(11) * 100) + " %");
+
+                        if (Float.parseFloat(String.format("%.2f", paramsList.get(4))) < 3.00f) {
+                            Log.d("zjw", "外部电压: " + paramsList.get(4));
+                            Log.d("zjw", "STOP_FLAG: " + STOP_FLAG);
+                            if (!STOP_FLAG) {
+                                controlVideo("http://192.168.1.160", 0);
+                                controlVideo("http://192.168.1.161", 0);
+                                STOP_FLAG = true;
+                                START_FLAG = false;
+                                tv_videoState.setTextColor(Color.RED);
+                                tv_videoState.setText("停止录像");
+                            }
+                        } else {
+                            Log.d("zjw", "外部电压: " + paramsList.get(4));
+                            Log.d("zjw", "START_FLAG: " + START_FLAG);
+                            if (!START_FLAG) {
+                                controlVideo("http://192.168.1.160", 1);
+                                controlVideo("http://192.168.1.161", 1);
+                                START_FLAG = true;
+                                STOP_FLAG = false;
+                                tv_videoState.setTextColor(Color.GREEN);
+                                tv_videoState.setText("正在录像");
+                            }
+                        }
+                    } else {
+                        ToastUtils.showToast(context, "硬件参数数据出错");
+                    }
+                    break;
+            }
+        }
+    };
 
     @Override
-    public void onDataSuccess(int tag, String result) {
-        switch (tag) {
-            case LATITUDE:
-                tv_latitude.setText(result);
-                break;
-            case LONGITUDE:
-                tv_longitude.setText(result);
-                break;
-            case OUTSIDEVOLTAGE:
-                tv_outSideVoltage.setText(result + "V");
-                if (Float.parseFloat(result) < 3) {
-                    stopVideo();
-                }
-                break;
-            case BATTERYVOLTAGE:
-                tv_BatteryVoltage.setText(result + "V");
-                break;
-            case SPEED:
-                tv_speed.setText(result + "km/h");
-                break;
-            case MNTOPFOUR:
-                mnList[0] = result;
-                break;
-            case MNLASTFOUR:
-                mnList[1] = result;
-                tv_mnCode.setText(mnList[0] + "01DF00" + mnList[1]);
-                break;
-            case LASTBAT:
-                tv_lastElectricity.setText(result + "%");
-        }
+    public void onSuccess(int tag, List<String> result) {
+        Message message = Message.obtain();
+        message.what = tag;
+        message.obj = result;
+        handler.sendMessage(message);
+    }
+
+    @Override
+    public void onParamsSuccess(int tag, List<Float> result) {
+        Message message = Message.obtain();
+        message.what = tag;
+        message.obj = result;
+        handler.sendMessage(message);
     }
 
     /**
      * 当外部电压小于3V时，停止录像
      */
-    private void stopVideo() {
+    private void controlVideo(String url, int enabled) {
 
-        new Retrofit.Builder().baseUrl("http://192.168.1.160").build()
+        Map<String, Integer> map = new HashMap<>();
+        map.put("RECORD.enableRec", enabled);
+        map.put("RECORD.DAY7.allDayFlag", enabled);
+        new Retrofit.Builder().baseUrl(url).build()
                 .create(Api.class)
-                .updateTimeRecord("Basic " + basic, 0)
+                .stopTimeRecord("Basic " + basic, map)
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -254,7 +312,11 @@ public class PreviewFragment extends BaseFragment implements  Contract.IPreviewV
                             String[] stringArray = SplitUtils.getStringArray(response.body());
                             String resultCode = SplitUtils.getValue(stringArray, "root.ERR.no");
                             if (resultCode != null && resultCode.equals("0")) {
-                                //ToastUtils.showToast(getContext(), "参数修改成功!");
+                                if (enabled == 0) {
+                                    ToastUtils.showToast(getContext(), "定时录像关闭");
+                                } else if (enabled == 1) {
+                                    ToastUtils.showToast(getContext(), "定时录像打开");
+                                }
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -275,7 +337,7 @@ public class PreviewFragment extends BaseFragment implements  Contract.IPreviewV
 
     @Override
     public void onLoading() {
-       startLoadingView();
+
     }
 
     @Override
@@ -283,9 +345,4 @@ public class PreviewFragment extends BaseFragment implements  Contract.IPreviewV
 
     }
 
-    public void startLoadingView() {
-        Event e = new Event();
-        e.type = Event.TYPE_HARDWARE;
-        EventBus.getDefault().post(e);
-    }
 }

@@ -45,6 +45,8 @@ public class OnvifSdk {
                 Iterator<Device> iterator = devices.iterator();
                 while (iterator.hasNext()) {
                     Device device = iterator.next();
+                    device.setUserName("admin");
+                    device.setUserPwd("Rock@688051");
                     if (device.getIpAddress() == null) {
                         iterator.remove();
                     }

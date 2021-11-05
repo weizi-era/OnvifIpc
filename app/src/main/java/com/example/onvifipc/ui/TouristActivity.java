@@ -42,9 +42,6 @@ public class TouristActivity extends BaseActivity  {
     @BindView(R.id.tourist_navi_view)
     BottomNavigationView touristNaviView;
 
-    private static final int INDEX_PREVIEW = 0;
-    private static final int INDEX_REPLAY = 1;
-
     private Fragment mFragment;
 
     private FragmentTransaction transaction;
@@ -59,6 +56,11 @@ public class TouristActivity extends BaseActivity  {
     @Override
     public int setLayoutResourceID() {
         return R.layout.activity_tourist;
+    }
+
+    @Override
+    public void reConnect() {
+
     }
 
     @Override

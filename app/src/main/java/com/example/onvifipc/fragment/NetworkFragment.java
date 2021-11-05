@@ -79,6 +79,7 @@ public class NetworkFragment extends BaseFragment implements RadioGroup.OnChecke
     }
 
     private void initSpinner(List<String> ethLists) {
+
         spinner.setItems(ethLists);
         spinner.setSelectedIndex(0);
         spinner.setBackgroundResource(R.drawable.spinner_bg);

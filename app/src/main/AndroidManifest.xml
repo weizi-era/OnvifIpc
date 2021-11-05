@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:name=".BaseApplication"
@@ -18,11 +19,6 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-<!--        <activity android:name=".ui.ReplayActivity"></activity>-->
-<!--        <activity android:name=".ui.ManagerMainActivity" />-->
-<!--        <activity-->
-<!--            android:name=".ui.RealVideoActivity"-->
-<!--            android:configChanges="orientation|screenSize|keyboardHidden" />-->
 
         <meta-data
             android:name="design_width_in_dp"
@@ -32,13 +28,26 @@
             android:value="640" />
 
         <activity android:name=".ui.LoginActivity"
-            android:theme="@style/TranslucentTheme">
+            android:theme="@style/LauncherTheme">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver
+            android:name=".utils.NetBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".ui.CameraInfoActivity"
             android:configChanges="orientation|screenSize|keyboardHidden" />

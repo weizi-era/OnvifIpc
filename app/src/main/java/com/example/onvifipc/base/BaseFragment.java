@@ -24,8 +24,6 @@ public abstract class BaseFragment extends Fragment {
     protected boolean isLazyLoaded = false;
     private boolean isPrepared = false;
 
-    protected LoadService mBaseLoadService;
-
     protected Activity context;
 
     protected Unbinder unbinder;
@@ -43,14 +41,6 @@ public abstract class BaseFragment extends Fragment {
 
         initView();
 
-//        mBaseLoadService = LoadSir.getDefault().register(rootView, new Callback.OnReloadListener() {
-//            @Override
-//            public void onReload(View v) {
-//                Log.d("TAG", "onReload: 重新加载了吗");
-//                onNetReload(v);
-//            }
-//        });
-//        Log.d("TAG", "onCreateView: ");
 
         return mRootView;
     }

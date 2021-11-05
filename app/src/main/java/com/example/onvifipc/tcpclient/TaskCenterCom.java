@@ -13,9 +13,8 @@ import java.net.Socket;
 import java.util.Arrays;
 
 /**
- * Created by shensky on 2018/1/15.
+ * TCP 串口状态任务类
  */
-
 public class TaskCenterCom {
     private static TaskCenterCom instance;
     private static final String TAG = "TaskCenterCom";
@@ -67,7 +66,7 @@ public class TaskCenterCom {
             public void run() {
                 try {
                     socket = new Socket(ipAddress, port);
-                    socket.setSoTimeout(2000);//设置超时时间
+                   // socket.setSoTimeout(5000);//设置超时时间
                     socket.setTcpNoDelay(true);
                     socket.setKeepAlive(true);
                     if (isConnected()) {
@@ -122,6 +121,9 @@ public class TaskCenterCom {
     public void disconnect() {
         if (isConnected()) {
             try {
+                if (dis != null) {
+                    dis.close();
+                }
                 socket.close();
                 if (socket.isClosed()) {
                     if (disconnectedCallback != null) {
@@ -143,21 +145,18 @@ public class TaskCenterCom {
             try {
                 /**得到的是16进制数，需要进行解析*/
                 byte[] bt = new byte[2];
-                Log.d(TAG, "receiveComData1111: " + ByteUtil.bytes2HexStr(bt));
-//                获取接收到的字节和字节数
+                // 获取接收到的字节和字节数
                 int length = dis.read(bt);
-//                获取正确的字节
+                // 获取正确的字节
                 byte[] bs = new byte[length];
-                Log.d(TAG, "receiveComData2222: " + ByteUtil.bytes2HexStr(bs));
 
                 System.arraycopy(bt, 0, bs, 0, length);
 
                 if (receivedCallback != null) {
                     receivedCallback.callbackComData(bs);
                 }
-                Log.i(TAG,"接收成功");
             } catch (IOException e) {
-                Log.i(TAG,"接收失败");
+               e.printStackTrace();
             }
         }
     }

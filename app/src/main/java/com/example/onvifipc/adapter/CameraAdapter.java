@@ -40,7 +40,7 @@ public class CameraAdapter extends RecyclerView.Adapter<CameraAdapter.ViewHolder
     private final List<Device> devices;
     private final Context context;
     private final List<Boolean> flagLists;
-    private int errorCount = 0;
+    private int errorCount = 1;
 
     public static Map<Integer, String> deviceIP;
     public static Map<Integer, Boolean> isFirst;
@@ -70,38 +70,36 @@ public class CameraAdapter extends RecyclerView.Adapter<CameraAdapter.ViewHolder
         deviceIP.put(adapterPosition, SplitUtils.getDeviceIP(device));
         isFirst.put(adapterPosition, true);
         Log.d("TAG", "onBindViewHolder: " + isFirst);
-       // deviceIP.add(SplitUtils.getDeviceIP(device));
         holder.cameraLogo.setImageResource(R.mipmap.camera_icon);
         holder.cameraUrl.setText(device.getServiceUrl());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //deviceIP = SplitUtils.getDeviceIP(device);
                 Log.d("TAG", "onClick: " + deviceIP);
                 if (!flagLists.get(adapterPosition)) {
-                    LoginDialog dialog = new LoginDialog(context);
-                    WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();
+                    LoginDialog mLoginDialog = new LoginDialog(context);
+                    WindowManager.LayoutParams lp = mLoginDialog.getWindow().getAttributes();
                     lp.dimAmount = 0.8f;
-                    dialog.getWindow().setAttributes(lp);
-                    dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-                    dialog.setSureListener(new LoginDialog.sureListener() {
+                    mLoginDialog.getWindow().setAttributes(lp);
+                    mLoginDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+                    mLoginDialog.setSureListener(new LoginDialog.sureListener() {
                         @Override
                         public void sure(String userName, String userPwd) {
                             if (userName != null && userPwd != null) {
                                 login(holder, adapterPosition, userName, userPwd);
-                                dialog.dismiss();
+                                mLoginDialog.dismiss();
                             } else {
                                 ToastUtils.showToast(context, "用户名或密码不能为空");
                             }
                         }
                     });
-                    dialog.setCloseListener(new LoginDialog.closeListener() {
+                    mLoginDialog.setCloseListener(new LoginDialog.closeListener() {
                         @Override
                         public void close() {
-                            dialog.dismiss();
+                            mLoginDialog.dismiss();
                         }
                     });
-                    dialog.show();
+                    mLoginDialog.show();
                 } else {
                     Intent intent = new Intent(context, CameraInfoActivity.class);
                     intent.putExtra("position", position);
@@ -116,6 +114,7 @@ public class CameraAdapter extends RecyclerView.Adapter<CameraAdapter.ViewHolder
     public int getItemCount() {
         return devices == null ? 0 : devices.size();
     }
+
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -135,7 +134,6 @@ public class CameraAdapter extends RecyclerView.Adapter<CameraAdapter.ViewHolder
         api.login("Basic " + basic).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(@NotNull Call<ResponseBody> call, @NotNull Response<ResponseBody> response) {
-               // int errorCount = 1;
                 try {
                     String[] stringArray = SplitUtils.getStringArray(response.body());
                     String value = SplitUtils.getValue(stringArray, "root.ERR.des");
@@ -152,7 +150,8 @@ public class CameraAdapter extends RecyclerView.Adapter<CameraAdapter.ViewHolder
                         intent.putExtra("userpwd", pwd);
                         context.startActivity(intent);
                     } else {
-                        ToastUtils.showToast(context, "用户名或密码第 " + (errorCount++) + " 错误" + ",错误5次将会锁定30分钟");
+                        ToastUtils.showToast(context, "用户名或密码第 " + errorCount + " 错误" + ",错误5次将会锁定30分钟");
+                        errorCount ++;
                         holder.cameraLogo.setImageResource(R.drawable.camera);
                         flagLists.set(position, false);
                     }

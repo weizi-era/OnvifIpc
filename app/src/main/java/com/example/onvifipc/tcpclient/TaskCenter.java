@@ -4,16 +4,28 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.blankj.utilcode.util.ArrayUtils;
+import com.example.onvifipc.Common;
+import com.example.onvifipc.utils.ByteUtil;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.Socket;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.Timer;
 
 /**
- * Created by shensky on 2018/1/15.
+ * TCP 硬件参数任务类
  */
-
 public class TaskCenter {
     private static TaskCenter instance;
     private static final String TAG = "TaskCenter";
@@ -28,16 +40,17 @@ public class TaskCenter {
 
     //    Socket输出流
     private DataOutputStream dos;
+    private OutputStream os;
     //    Socket输入流
+    private InputStream is;
     private DataInputStream dis;
+    private BufferedInputStream bis;
     //    连接回调
     private OnServerConnectedCallbackBlock connectedCallback;
     //    断开连接回调(连接失败)
     private OnServerDisconnectedCallbackBlock disconnectedCallback;
     //    接收信息回调
     private OnReceiveCallbackBlock receivedCallback;
-
-    private Handler handler;
 
     //    构造函数私有化
     private TaskCenter() {
@@ -69,7 +82,7 @@ public class TaskCenter {
             public void run() {
                 try {
                     socket = new Socket(ipAddress, port);
-                    socket.setSoTimeout(2000);//设置超时时间
+              //      socket.setSoTimeout(5000);//设置超时时间
                     socket.setTcpNoDelay(true);
                     socket.setKeepAlive(true);
                     if (isConnected()) {
@@ -79,15 +92,8 @@ public class TaskCenter {
                             connectedCallback.callback();
                         }
 
-                        dos = new DataOutputStream(socket.getOutputStream());
-                        dis = new DataInputStream(socket.getInputStream());
-
-                        receive();
-
-                        Message message = Message.obtain();
-                        message.what = 1;
-                        message.obj = "连接失败";
-                        handler.sendMessage(message);
+                        os = socket.getOutputStream();
+                        is = socket.getInputStream();
 
                         Log.i(TAG,"连接成功");
                     } else {
@@ -130,8 +136,11 @@ public class TaskCenter {
     public void disconnect() {
         if (isConnected()) {
             try {
-                if (dos != null) {
-                    dos.close();
+                if (os != null) {
+                    os.close();
+                }
+                if (is != null) {
+                    is.close();
                 }
                 socket.close();
                 if (socket.isClosed()) {
@@ -148,25 +157,48 @@ public class TaskCenter {
     /**
      * 接收数据
      */
-    public void receive() {
-        while (isConnected()) {
-            try {
-                /**得到的是16进制数，需要进行解析*/
-                byte[] bt = new byte[1024];
-//                获取接收到的字节和字节数
-                int length = dis.read(bt);
-//                获取正确的字节
-                byte[] bs = new byte[length];
+    public void receive(int tag) {
 
-                System.arraycopy(bt, 0, bs, 0, length);
+        synchronized (this) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    //   while (isConnected()) {
+                    try {
+                        byte[] buf = new byte[1024];
 
-                if (receivedCallback != null) {
-                    receivedCallback.callback(bs);
+                        StringBuilder builder = new StringBuilder();
+                        int len = 0;
+
+                        len = is.read(buf);
+
+                        Log.d(TAG, "获取的长度: " + len);
+
+                        byte[] temp = new byte[len];
+                        System.arraycopy(buf, 0, temp, 0, len);
+
+                        builder.append(ByteUtil.bytes2HexStr(temp));
+                        Log.d(TAG, "读取的字节===: " + builder.toString());
+
+                        if (len > 0) {
+                            if (tag == Common.CODE && len == 9) {
+                                if (receivedCallback != null) {
+                                    receivedCallback.callback(builder.toString());
+                                }
+                            } else if (tag == Common.PARAMS && len == 53 && builder.toString().startsWith("010330")) {
+                                if (receivedCallback != null) {
+                                    receivedCallback.callback(builder.toString());
+                                }
+                            }
+                        }
+
+                        Log.i(TAG,"接收Modbus数据成功");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    //    }
                 }
-                Log.i(TAG,"接收成功");
-            } catch (IOException e) {
-                Log.i(TAG,"接收失败");
-            }
+            }).start();
         }
     }
 
@@ -175,17 +207,21 @@ public class TaskCenter {
      *
      * @param data  数据
      */
-    public void send(final byte[] data) {
+    public void send(final byte[] data, int tag) {
         synchronized (this) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     if (socket != null) {
                         try {
-                            dos.write(data);
-                            dos.flush();
+                            os.write(data);
+                            os.flush();
                             Log.i(TAG,"发送成功");
-                        } catch (IOException e) {
+
+                            Thread.sleep(2000);
+
+                            receive(tag);
+                        } catch (Exception e) {
                             e.printStackTrace();
                             Log.i(TAG,"发送失败");
                         }
@@ -196,6 +232,7 @@ public class TaskCenter {
             }).start();
         }
     }
+
     /**
      * 回调声明
      */
@@ -206,7 +243,7 @@ public class TaskCenter {
         void callback(IOException e);
     }
     public interface OnReceiveCallbackBlock {
-        void callback(byte[] msg);
+        void callback(String msg);
     }
 
     public void setConnectedCallback(OnServerConnectedCallbackBlock connectedCallback) {

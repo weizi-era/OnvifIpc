@@ -21,27 +21,16 @@ public class Device {
      */
     private String serviceUrl;
     private String uuid;
-    /**
-     * 通过getDeviceInformation 获取
-     */
-    private String firmwareVersion;
-    private String manufacturer;
-    private String serialNumber;
-    private String modle;
+
     /**
      * getCapabilities
      */
     private String mediaUrl;
-    private String ptzUrl;
     private String imageUrl;
-    private String eventUrl;
-    private String analyticsUrl;
 
-    public static final String USER = "admin";
-    public static final String PSD = "12345";
 
     public Device() {
-        this("admin", "12345");
+
     }
 
     public Device(String userName, String userPwd) {
@@ -49,52 +38,20 @@ public class Device {
         this.userPwd = userPwd;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
     public void setUserName(String userName) {
         this.userName = userName;
     }
 
+    public void setUserPwd(String userPwd) {
+        this.userPwd = userPwd;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
     public String getUserPwd() {
         return userPwd;
-    }
-
-    public void setUserPwd(String psw) {
-        this.userPwd = psw;
-    }
-
-    public String getFirmwareVersion() {
-        return firmwareVersion;
-    }
-
-    public void setFirmwareVersion(String firmwareVersion) {
-        this.firmwareVersion = firmwareVersion;
-    }
-
-    public String getManufacturer() {
-        return manufacturer;
-    }
-
-    public void setManufacturer(String manufacturer) {
-        this.manufacturer = manufacturer;
-    }
-
-    public String getModle() {
-        return modle;
-    }
-
-    public void setModle(String modle) {
-        this.modle = modle;
-    }
-
-    public String getSerialNumber() {
-        return serialNumber;
-    }
-
-    public void setSerialNumber(String serialNumber) {
-        this.serialNumber = serialNumber;
     }
 
     public String getServiceUrl() {
@@ -122,14 +79,6 @@ public class Device {
         this.mediaUrl = mediaUrl;
     }
 
-    public String getPtzUrl() {
-        return ptzUrl;
-    }
-
-    public void setPtzUrl(String ptzUrl) {
-        this.ptzUrl = ptzUrl;
-    }
-
     public String getImageUrl() {
         return imageUrl;
     }
@@ -137,23 +86,6 @@ public class Device {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
-
-    public String getEventUrl() {
-        return eventUrl;
-    }
-
-    public void setEventUrl(String eventUrl) {
-        this.eventUrl = eventUrl;
-    }
-
-    public String getAnalyticsUrl() {
-        return analyticsUrl;
-    }
-
-    public void setAnalyticsUrl(String analyticsUrl) {
-        this.analyticsUrl = analyticsUrl;
-    }
-
 
     public String getIpAddress() {
         return ipAddress;
@@ -173,14 +105,8 @@ public class Device {
                 ", ipAddress='" + ipAddress + '\'' +
                 ", serviceUrl='" + serviceUrl + '\'' +
                 ", uuid='" + uuid + '\'' +
-                ", firmwareVersion='" + firmwareVersion + '\'' +
-                ", manufacturer='" + manufacturer + '\'' +
-                ", serialNumber='" + serialNumber + '\'' +
                 ", mediaUrl='" + mediaUrl + '\'' +
-                ", ptzUrl='" + ptzUrl + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
-                ", eventUrl='" + eventUrl + '\'' +
-                ", analyticsUrl='" + analyticsUrl + '\'' +
                 '}';
     }
 }

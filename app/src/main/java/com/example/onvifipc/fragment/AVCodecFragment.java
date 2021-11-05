@@ -88,18 +88,17 @@ public class AVCodecFragment extends BaseFragment implements MaterialSpinner.OnI
     @Override
     public void onLazyLoad() {
         mAvCodecModel = new AVCodecModel(basic, position, this);
-        streamTypeList = new String[] {"主码流", "次码流"};
-        streamModeList = new String[] {"视频流", "复合流"};
-        levelList = new String[] {"baseline profile", "main profile", "high profile"};
-        encTypeList = new String[] {"H.264", "MJPEG", "JPEG", "MPEG4", "H.265"};
-        bitTypeList = new String[] {"定码流", "变码流", "按质量编码"};
-        gModeList = new String[] {"NORMAL P", "DUAL P", "SMART P"};
-        decToHexList = new String[] {"1080P(1920*1080)", "720P(1280*720)"};
+        streamTypeList = new String[]{"主码流", "次码流"};
+        streamModeList = new String[]{"视频流", "复合流"};
+        levelList = new String[]{"baseline profile", "main profile", "high profile"};
+        encTypeList = new String[]{"H.264", "MJPEG", "JPEG", "MPEG4", "H.265"};
+        bitTypeList = new String[]{"定码流", "变码流", "按质量编码"};
+        gModeList = new String[]{"NORMAL P", "DUAL P", "SMART P"};
+        decToHexList = new String[]{"1080P(1920*1080)", "720P(1280*720)"};
 
         bt_save.setOnClickListener(this);
         streamTypeSpin.setOnItemSelectedListener(this);
 
-        //默认主码流
         mAvCodecModel.load(Common.MAIN_STREAM);
     }
 

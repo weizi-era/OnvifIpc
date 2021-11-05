@@ -6,25 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".ui.MainActivity">
 
-
-<!--    <com.scwang.smart.refresh.layout.SmartRefreshLayout-->
-<!--        android:id="@+id/refreshLayout"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:layout_marginTop="40dp">-->
-
-<!--        <com.scwang.smart.refresh.header.ClassicsHeader-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"/>-->
-
-
-<!--        <androidx.recyclerview.widget.RecyclerView-->
-<!--            android:id="@+id/recyclerView"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content" />-->
-
-<!--    </com.scwang.smart.refresh.layout.SmartRefreshLayout>-->
-
     <FrameLayout
         android:id="@+id/main_container"
         android:layout_width="match_parent"
@@ -43,59 +24,5 @@
         app:menu="@menu/main_navi"
         app:itemIconTint="@drawable/navi_selector"
         app:itemTextColor="@drawable/navi_selector"/>
-
-
-
-<!--    <LinearLayout-->
-<!--        android:id="@+id/ll_control"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_gravity="bottom"-->
-<!--        android:orientation="horizontal">-->
-
-<!--        <LinearLayout-->
-<!--            android:id="@+id/ll_preview"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:gravity="center"-->
-<!--            android:layout_weight="1">-->
-
-<!--            <ImageView-->
-<!--                android:layout_width="35dp"-->
-<!--                android:layout_height="35dp"-->
-<!--                android:src="@mipmap/icon_preview"/>-->
-
-<!--            <TextView-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginLeft="5dp"-->
-<!--                android:text="预览"-->
-<!--                android:textSize="25sp"-->
-<!--                android:textColor="@color/black"/>-->
-<!--        </LinearLayout>-->
-
-<!--        <LinearLayout-->
-<!--            android:id="@+id/ll_replay"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:gravity="center"-->
-<!--            android:layout_weight="1">-->
-
-
-<!--            <ImageView-->
-<!--                android:layout_width="35dp"-->
-<!--                android:layout_height="35dp"-->
-<!--                android:src="@mipmap/icon_replay"/>-->
-
-<!--            <TextView-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginLeft="5dp"-->
-<!--                android:text="回放"-->
-<!--                android:textSize="25sp"-->
-<!--                android:textColor="@color/black"/>-->
-<!--        </LinearLayout>-->
-
-<!--    </LinearLayout>-->
 
 </RelativeLayout>

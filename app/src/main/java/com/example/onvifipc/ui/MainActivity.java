@@ -1,8 +1,12 @@
 package com.example.onvifipc.ui;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseArray;
@@ -46,6 +50,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.BindView;
 import okhttp3.OkHttpClient;
@@ -79,6 +85,11 @@ public class MainActivity extends BaseActivity  {
     @Override
     public int setLayoutResourceID() {
         return R.layout.activity_main;
+    }
+
+    @Override
+    public void reConnect() {
+
     }
 
     @Override
@@ -161,7 +172,7 @@ public class MainActivity extends BaseActivity  {
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
-
+                        ToastUtils.showToast(MainActivity.this, "网络错误");
                     }
                 });
     }

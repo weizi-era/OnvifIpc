@@ -70,6 +70,7 @@
                 android:textSize="15sp"
                 android:paddingLeft="10dp"
                 android:singleLine="true"
+                android:inputType="textPassword"
                 android:background="@drawable/loginedit_bg"/>
 
             <ImageView

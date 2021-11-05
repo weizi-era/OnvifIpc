@@ -2,6 +2,9 @@ package com.example.onvifipc.utils;
 
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CRC16Util {
     /**
      * CRC16相关计算
@@ -90,24 +93,50 @@ public class CRC16Util {
     }
 
 
-    public static float getFinalData(byte[] msg) {
-        int length = msg.length;
-        Log.d("TAG", "返回的长度是========: " + length);
-        String s2 = ByteUtil.bytes2HexStr(msg);
-        Log.d("TaskCenter", "接收消息: " + s2);
-        String topFour = s2.substring(10, 14);
-        String lastFour = s2.substring(6, 10);
-        String dataHexString = topFour + lastFour;
-        Log.d("TaskCenter", "截取数据: " + dataHexString);
-        byte[] bytes = ByteUtil.hexStr2bytes(dataHexString);
-        return getFloat(bytes);
+    public static List<Float> getFinalData(String msg) {
+        List<Float> finalResultList = new ArrayList<>();
+        List<String> result = new ArrayList<>();
+        int length = msg.length();
+        String firstSplit = msg.substring(6, length - 4);
+
+        while(length >= 8) {
+            String tmp = firstSplit.substring(0, 8);
+            String substring1 = tmp.substring(0, 4);
+            String substring2 = tmp.substring(4, 8);
+            String resTmp = substring2 + substring1;
+            result.add(resTmp);
+            firstSplit = firstSplit.substring(8);
+            length = firstSplit.length();
+        }
+
+        for (String s: result) {
+            byte[] bytes = ByteUtil.hexStr2bytes(s);
+            float f = getFloat(bytes);
+            //String results = String.format("%.2f", f);
+            finalResultList.add(f);
+        }
+        return finalResultList;
     }
 
-    public static long getMNData(byte[] msg) {
-        String s2 = ByteUtil.bytes2HexStr(msg);
-        Log.d("TaskCenter", "接收消息: " + s2);
-        String data = s2.substring(7, 10);
+    public static List<String> getMNData(String msg) {
 
-        return ByteUtil.hexStr2decimal(data);
+        List<String> finalResultList = new ArrayList<>();
+        List<String> result = new ArrayList<>();
+        int length = msg.length();
+        String firstSplit = msg.substring(6, length - 4);
+
+        while(length >= 4) {
+            String tmp = firstSplit.substring(0, 4);
+            result.add(tmp);
+            firstSplit = firstSplit.substring(4);
+            length = firstSplit.length();
+        }
+
+        for (String s: result) {
+            long str2decimal = ByteUtil.hexStr2decimal(s);
+            String format = String.format("%04d",str2decimal);
+            finalResultList.add(format);
+        }
+        return finalResultList;
     }
 }
