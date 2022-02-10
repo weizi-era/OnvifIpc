@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/preview_fragment">
+
+    <fragment
+        android:id="@+id/preview_fragment"
+        android:name="com.example.onvifipc.ui.fragment.PreviewFragment"
+        android:label="preview_fragment"
+        tools:layout="@layout/fragment_preview" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/replay_fragment"
+        android:name="com.example.onvifipc.ui.fragment.ReplayFragment"
+        android:label="replay_fragment"
+        tools:layout="@layout/fragment_replay"/>
+
+    <fragment
+        android:id="@+id/settings_fragment"
+        android:name="com.example.onvifipc.ui.fragment.SettingsFragment"
+        android:label="settings_fragment"
+        tools:layout="@layout/fragment_settings"/>
+
+</navigation>

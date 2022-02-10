@@ -15,6 +15,8 @@ import androidx.fragment.app.Fragment;
 
 import com.kingja.loadsir.core.LoadService;
 
+import org.jetbrains.annotations.NotNull;
+
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
@@ -38,20 +40,20 @@ public abstract class BaseFragment extends Fragment {
 
         unbinder = ButterKnife.bind(this, mRootView);
 
-
-        initView();
-
-
         return mRootView;
     }
 
     protected abstract void initView();
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initView();
+    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.d("TAG", "onActivityCreated: ");
         isPrepared = true;
         lazyLoad();
     }

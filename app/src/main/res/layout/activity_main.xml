@@ -4,23 +4,38 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.MainActivity">
+    tools:context=".ui.activity.MainActivity">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="@color/teal_200">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="实时预览"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
+    </com.google.android.material.appbar.MaterialToolbar>
 
     <FrameLayout
         android:id="@+id/main_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="?attr/actionBarSize"/>
-
+        android:layout_below="@+id/toolbar"
+        android:layout_above="@+id/main_navi_view"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/main_navi_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?actionBarSize"
         android:layout_alignParentBottom="true"
         android:background="?android:attr/windowBackground"
-        style="@style/Widget.Design.BottomNavigationView"
-        app:labelVisibilityMode="labeled"
         app:menu="@menu/main_navi"
         app:itemIconTint="@drawable/navi_selector"
         app:itemTextColor="@drawable/navi_selector"/>

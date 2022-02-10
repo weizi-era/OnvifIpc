@@ -148,13 +148,15 @@ public class TaskCenterCom {
                 // 获取接收到的字节和字节数
                 int length = dis.read(bt);
                 // 获取正确的字节
-                byte[] bs = new byte[length];
+                if (length != -1) {
+                    byte[] bs = new byte[length];
+                    System.arraycopy(bt, 0, bs, 0, length);
 
-                System.arraycopy(bt, 0, bs, 0, length);
-
-                if (receivedCallback != null) {
-                    receivedCallback.callbackComData(bs);
+                    if (receivedCallback != null) {
+                        receivedCallback.callbackComData(bs);
+                    }
                 }
+
             } catch (IOException e) {
                e.printStackTrace();
             }

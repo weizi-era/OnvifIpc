@@ -8,113 +8,62 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@color/teal_200" >
-
-        <TextView
-            android:id="@+id/toolbar_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:text="实时预览" />
-
-    </androidx.appcompat.widget.Toolbar>
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <RelativeLayout
-            android:id="@+id/rl_group1"
+        <FrameLayout
+            android:id="@+id/fl_group1"
             android:layout_width="match_parent"
-            android:layout_height="220dp">
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:foregroundGravity="clip_horizontal|clip_vertical">
 
-            <cn.nodemedia.NodePlayerView
-                android:id="@+id/video_view1"
+
+            <org.videolan.libvlc.util.VLCVideoLayout
+                android:id="@+id/video_layout1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
+            <ProgressBar
+                android:id="@+id/pb_progressbar1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"/>
 
-            <Button
-                android:id="@+id/btn_video_back1"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:gravity="left"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/icon_back" />
-
-            <Button
-                android:id="@+id/btn_play_video1"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginLeft="5dp"
-                android:layout_alignParentBottom="true"
-                android:background="@drawable/icon_topause" />
-
-            <Button
-                android:id="@+id/btn_full_video1"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="true"
-                android:layout_marginRight="5dp"
-                android:background="@drawable/icon_tofullscreen" />
-
-        </RelativeLayout>
+        </FrameLayout>
 
         <View
             android:id="@+id/line"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_below="@+id/rl_group1"/>
+            android:layout_below="@+id/fl_group1"/>
 
-        <RelativeLayout
-            android:id="@+id/rl_group2"
+        <FrameLayout
+            android:id="@+id/fl_group2"
             android:layout_width="match_parent"
-            android:layout_height="220dp"
-            android:layout_below="@id/line">
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:layout_below="@+id/fl_group1"
+            android:foregroundGravity="clip_horizontal|clip_vertical">
 
-            <cn.nodemedia.NodePlayerView
-                android:id="@+id/video_view2"
+
+            <org.videolan.libvlc.util.VLCVideoLayout
+                android:id="@+id/video_layout2"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent" />
 
-            <Button
-                android:id="@+id/btn_video_back2"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:gravity="left"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/icon_back" />
+            <ProgressBar
+                android:id="@+id/pb_progressbar2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"/>
 
-            <Button
-                android:id="@+id/btn_play_video2"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginLeft="5dp"
-                android:layout_alignParentBottom="true"
-                android:background="@drawable/icon_topause" />
-
-            <Button
-                android:id="@+id/btn_full_video2"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="true"
-                android:layout_marginRight="5dp"
-                android:background="@drawable/icon_tofullscreen" />
-
-        </RelativeLayout>
+        </FrameLayout>
 
     </RelativeLayout>
-
 
     <ScrollView
         android:id="@+id/scrollView"

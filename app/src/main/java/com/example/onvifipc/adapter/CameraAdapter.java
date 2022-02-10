@@ -14,7 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.onvifipc.Api;
-import com.example.onvifipc.ui.CameraInfoActivity;
+import com.example.onvifipc.ui.activity.CameraInfoActivity;
 import com.example.onvifipc.view.LoginDialog;
 import com.example.onvifipc.R;
 import com.example.onvifipc.bean.Device;

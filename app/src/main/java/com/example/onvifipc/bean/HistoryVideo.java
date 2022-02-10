@@ -8,6 +8,8 @@ public class HistoryVideo extends SelectedBean {
     private String videoSize;
     private String property;
 
+
+
     public HistoryVideo(int id, String startTime, String endTime, String videoSize, String property, boolean isSelected) {
         this.id = id;
         this.startTime = startTime;

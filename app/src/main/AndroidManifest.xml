@@ -27,7 +27,7 @@
             android:name="design_height_in_dp"
             android:value="640" />
 
-        <activity android:name=".ui.LoginActivity"
+        <activity android:name=".ui.activity.LoginActivity"
             android:theme="@style/LauncherTheme">
 
             <intent-filter>
@@ -49,12 +49,12 @@
         </receiver>
 
         <activity
-            android:name=".ui.CameraInfoActivity"
+            android:name=".ui.activity.CameraInfoActivity"
             android:configChanges="orientation|screenSize|keyboardHidden" />
         <activity
-            android:name=".ui.MainActivity" />
-        <activity android:name=".ui.RouterConfigActivity"/>
-        <activity android:name=".ui.TouristActivity"/>
+            android:name=".ui.activity.MainActivity" />
+        <activity android:name=".ui.activity.RouterConfigActivity"/>
+        <activity android:name=".ui.activity.TouristActivity"/>
     </application>
 
 </manifest>

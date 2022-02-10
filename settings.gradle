@@ -1,3 +1,4 @@
 rootProject.name = "OnvifIpc"
 include ':app'
 include ':spinner_lib'
+include ':libvlc'

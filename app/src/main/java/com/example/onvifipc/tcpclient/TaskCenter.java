@@ -9,6 +9,7 @@ import com.example.onvifipc.Common;
 import com.example.onvifipc.utils.ByteUtil;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -45,6 +46,7 @@ public class TaskCenter {
     private InputStream is;
     private DataInputStream dis;
     private BufferedInputStream bis;
+    private BufferedOutputStream bos;
     //    连接回调
     private OnServerConnectedCallbackBlock connectedCallback;
     //    断开连接回调(连接失败)
@@ -92,6 +94,8 @@ public class TaskCenter {
                             connectedCallback.callback();
                         }
 
+                        bos = new BufferedOutputStream(socket.getOutputStream());
+                        bis = new BufferedInputStream(socket.getInputStream());
                         os = socket.getOutputStream();
                         is = socket.getInputStream();
 
@@ -172,12 +176,13 @@ public class TaskCenter {
 
                         len = is.read(buf);
 
-                        Log.d(TAG, "获取的长度: " + len);
+                        if (len != -1) {
+                            byte[] temp = new byte[len];
+                            System.arraycopy(buf, 0, temp, 0, len);
 
-                        byte[] temp = new byte[len];
-                        System.arraycopy(buf, 0, temp, 0, len);
+                            builder.append(ByteUtil.bytes2HexStr(temp));
+                        }
 
-                        builder.append(ByteUtil.bytes2HexStr(temp));
                         Log.d(TAG, "读取的字节===: " + builder.toString());
 
                         if (len > 0) {

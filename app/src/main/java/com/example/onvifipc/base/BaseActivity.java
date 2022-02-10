@@ -21,7 +21,7 @@ import com.example.onvifipc.BaseApplication;
 import com.example.onvifipc.Common;
 import com.example.onvifipc.tcpclient.TaskCenter;
 import com.example.onvifipc.tcpclient.TaskCenterCom;
-import com.example.onvifipc.ui.LoginActivity;
+import com.example.onvifipc.ui.activity.LoginActivity;
 import com.example.onvifipc.bean.NetworkChangeEvent;
 import com.example.onvifipc.utils.ToastUtils;
 import com.example.onvifipc.utils.WifiUtils;
@@ -47,8 +47,6 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
 
     protected boolean mCheckNetwork = true;
 
-  //  protected P mPresenter;
-
     private Unbinder unbinder;
 
     @Override
@@ -68,27 +66,15 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
 
         unbinder = ButterKnife.bind(this);
 
-
         EventBus.getDefault().register(this);
 
         hasNetwork(WifiUtils.isConnected(mContext));
-
-
-        //initPresenter();
 
         initView();
 
         initData();
     }
 
-//    private void initPresenter() {
-//        mPresenter = createPresenter();
-//        if (mPresenter != null) {
-//            mPresenter.attachView(this);
-//        }
-//    }
-
-   // protected abstract P createPresenter();
 
     protected abstract void initView();
 
@@ -99,8 +85,6 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     @Override
     protected void onResume() {
         super.onResume();
-
-        //hasNetwork(WifiUtils.isConnected(mContext));
 
         IntentFilter filter = new IntentFilter();
         filter.addAction("FORCE_OFFLINE");
@@ -126,18 +110,10 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        if (mPresenter != null) {
-//            mPresenter.detachView();
-//            mPresenter = null;
-//        }
-
         if (unbinder != null) {
             unbinder.unbind();
         }
-
         EventBus.getDefault().unregister(this);
-
-       // BaseApplication.getActivityManager().finishAll();
     }
 
     public abstract void reConnect();
